@@ -14,6 +14,8 @@
 		E6C439D6243639B90085C068 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E6C439D4243639B90085C068 /* Main.storyboard */; };
 		E6C439E2243639BA0085C068 /* coronaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C439E1243639BA0085C068 /* coronaTests.swift */; };
 		E6C439ED243639BA0085C068 /* coronaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C439EC243639BA0085C068 /* coronaUITests.swift */; };
+		E6C439FB24363A000085C068 /* Plot.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C439FA24363A000085C068 /* Plot.swift */; };
+		E6CFDC1424364AC400A50CFC /* Sir.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6CFDC1324364AC400A50CFC /* Sir.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +50,8 @@
 		E6C439E8243639BA0085C068 /* coronaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = coronaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E6C439EC243639BA0085C068 /* coronaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = coronaUITests.swift; sourceTree = "<group>"; };
 		E6C439EE243639BA0085C068 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E6C439FA24363A000085C068 /* Plot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plot.swift; sourceTree = "<group>"; };
+		E6CFDC1324364AC400A50CFC /* Sir.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sir.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +109,8 @@
 				E6C439D7243639B90085C068 /* Info.plist */,
 				E6C439D8243639B90085C068 /* corona.entitlements */,
 				E6C439D1243639B90085C068 /* Preview Content */,
+				E6C439FA24363A000085C068 /* Plot.swift */,
+				E6CFDC1324364AC400A50CFC /* Sir.swift */,
 			);
 			path = corona;
 			sourceTree = "<group>";
@@ -267,6 +273,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E6C439CE243639B40085C068 /* ContentView.swift in Sources */,
+				E6C439FB24363A000085C068 /* Plot.swift in Sources */,
+				E6CFDC1424364AC400A50CFC /* Sir.swift in Sources */,
 				E6C439CC243639B40085C068 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
