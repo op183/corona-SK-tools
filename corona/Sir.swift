@@ -46,8 +46,10 @@ struct SIR: Rk4 {
     let beta: Double
     let gamma: Double
     
+    var lambda: Double
+    
     func dsdt(st: Double, it: Double) -> Double {
-        -beta * st * it / population
+        -beta * st * it / population * lambda
     }
     
     func didt(st: Double, it: Double) -> Double {
@@ -69,33 +71,46 @@ struct SIR: Rk4 {
 
 class SIRModel: ObservableObject {
     
-    // covid "standasrt" parameters
+    // covid "standart" SIR  parameters
     let beta = 0.4
     let gamma = 1.0 / 6.0
     var R0: String {
         String(format: "%.2f", beta * lambda / gamma)
     }
     
-    let days = 200 // number of steps from initial state
+    let scale = [5000000.0, 3000000, 1000000.0, 500000, 300000, 100000, 50000, 30000, 10000, 5000, 3000, 1000]
+    @Published var scaleSelection = 2
+    
+    let days = [500, 300, 200, 150, 100, 50] // number of steps from initial state
+    @Published var daysSelection = 2
     
     // this parameters best fit current Slovak covid situation
     // initial state of model with
     let susceptible = 5500000.0
-    let infectious = 3000.0
+    let infectious = 200.0
     @Published var lambda = 0.7 // social distance, has effect on whole population
-    @Published var kappa = 0.04 // infectious quarantine effectivity, has effect on infected population
+    @Published var kappa = 0.041 // infectious quarantine effectivity, has effect on infected population
+    @Published var activeSearchSaturation = 5000.0
+    @Published var kappaSaturation = false
+    
+    let latency = 9
     
     func solve() -> (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double]) {
-        let sir = SIR(susspectible: susceptible, infectious: infectious, recovered: 0, beta: beta * lambda, gamma: gamma)
+        var sir = SIR(susspectible: susceptible, infectious: infectious, recovered: 0, beta: beta, gamma: gamma, lambda: 1.2)
         // state <-> [susceptible, infectious]
         var state = [sir.state()]
         var infectionrate: [Double] = []
         var isolated: [Double] = []
         var hospitalized: [Double] = []
         
-        _ = (0 ..< days).map { (i)  in
+        _ = (0 ..< days[daysSelection]).map { (i)  in
             let _s = state[i]
             var s_ = sir.next(state: _s)
+            // update lambda
+            // modeluje nábeh opatrení na obmedzenie social distance (latencia cca 14 dní)
+            if sir.lambda > lambda {
+                sir.lambda -= (sir.lambda - lambda) * 0.2
+            }
             
             // a small proportion of infectious is identified and isolated by active screening and "massive" testing
             
@@ -107,17 +122,56 @@ class SIRModel: ObservableObject {
             // model vykazuje značnú citlivosť na minimálne zmeny kappa a ukazuje že cieleným vyhľadávaním potenciálne
             // infikovaných a ich masívnym testovaním je možné sa epidémii brániť úspešnejšie, než znižovaním ekonomickej aktivyty
             
+            // K dôkladnej analýze a fungovania aktívneho vyhľadávania na Slovensku (to má na starosti úrad hlavného hygienika)
+            // by umožnila spresniť akýkoľvek odhad, ale s pravdepodobnosťou blížiacou sa istote je možné konštatovať, že
+            // aj pri 100% účinnosti týchto postupov systém (nikde na svete) nedokáže odhaliť ani 20% šíriteľov. Berúc do úvahy aj ďalšie
+            // parametre a štatistiky z nástupu pandémie inde vo sveten je možné regresnými metódami určiť že pri testovaní pacientov s klinický
+            // príznakmi je možné spoľahlivosť vyhladávania v rôznych krajinách odhadovať od 0 do max 10%.
             
-            isolated.append(s_[1] * kappa)
+            // ako je možné, že aj pri 0% efektivite sa prípad infekcie dostane do štatistík? je to tým, že infikovaný pacient asi v 20%
+            // skôr či neskôr musí vyhľadať zdravotú starostlivosť. V tom momente je testovaný a zároveň v izolácii.
+            
+            // to, že po povolení testovania aj samoplátcom sa pomer medzi pozitívne a nehgatívne testovamnými dnes u nás hýbe medzi
+            // 1 a 2 %, je len dočasné a nie je spôsobené pozitívnym trendom, ale tým, že takíto "pacienti" neboli určení na základe
+            // aktívneho vyhľadávania, ale z iniciatívy "pacientov".
+            
+            // akákoľvek dnes prijaté opatrenie sa prejaví so spozdením jeden až dva týždne.
+            
+            // model IZP aktívne vyhľadávanie neberie vôbec do úvahy, na druhej strane efektivita aktívneho vyhľadávania u nás predstavuje
+            // odhadom asi 4%.
+            
+            // napriek tomu má na spomalenie šírenia zásadný význam, pretože vahľadáva pacientov "čerstvo" nakazených.
+            
+            // predikcia IZP je z tohoto pohľadu silne podhodnotená a model nekoreluje so súčastným stavom najmä z hľadiska
+            
+            
+            // parameter "activeSearchSaturation" predstavuje kapacitné možnosti hygienikov, na Slovenku je ju možné odhadnúť z počiatku inefcie
+            // u nás, kde pri pomere nakazení / testovaní jeden deň dosiahla limitnú hranicu 10%, pri 40 tich pozitívnych indikáciaách,
+            // z čoho je možné odhadnúť limit na približne 200 indikácií pri aktívnom vyhľadaní 2000 indikovaných pre testovanie. model umožnije tento parameter nastaviť v rozsahu 0 ... 5000
+            // horná hranica je zvolená ako príklad Severnej Koreje a u nás by to pri dnešnom rozsahu prestavovalo asi 50 tisíc testov denne.
+            
+            // slovenská realita vykazuje na základ dát od začiatku epidémie kappa 4% a saturáciu 200, kappa sa s postupom pandémie príliš
+            // meniť nebude pokiaľ by sa zachovala dnešná trajektória nárastu (cca 7% denne)
+            
+            let det = min(s_[1] * kappa, kappaSaturation ? activeSearchSaturation : susceptible)
+            isolated.append(det)
+            
             // 25% need special care, rest stay in home quarantine
-            hospitalized.append(isolated[i] * 0.25)
+            // + 10% of infectious with 3 days latency
+            var l = 0.0
+            if i > latency {
+                l = state[i - latency][1] * 0.2
+            }
+            hospitalized.append(isolated[i] * 0.25 + l)
             
             
             // the rest stay in population and spread the infection
-            s_[1] *= 1 - kappa
+            //s_[1] *= 1 - kappa
+            s_[1] -= det
             state.append(s_)
             infectionrate.append(s_[1]/_s[1])
         }
+        
         return (susceptible: state.map {$0[0]}, infectious: state.map {$0[1]}, isolated: isolated, hospitalized: hospitalized, infectionrate: infectionrate)
     }
     
