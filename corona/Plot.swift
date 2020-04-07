@@ -124,6 +124,7 @@ struct Plot: View {
     }
 }
 
+
 struct PlotInfectionRate: View {
     let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double])
     let max: Double
@@ -160,6 +161,12 @@ struct PlotInfectionRate: View {
                             path.addLine(to: .init(x: proxy.size.width, y: y))
                         }
                     }.stroke(lineWidth: 0.5).foregroundColor(Color.secondary)
+                    
+                    // ref line
+                    Path { (path) in
+                        path.move(to: .init(x: 0, y: proxy.size.height / 2))
+                        path.addLine(to: .init(x: proxy.size.width, y: proxy.size.height / 2))
+                    }.stroke(Color.blue, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
                     
                     // infectionrate
                     Path { (path) in

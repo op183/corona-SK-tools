@@ -77,6 +77,7 @@ struct ContentView: View {
                 
                 PlotInfectionRate(values: model.result, max: 0.6)
                     .border(Color.secondary.opacity(0.1)).padding()
+                Text("Infection rate 0.7 ... 1.3").padding(.bottom)
                 
             }
             List {
