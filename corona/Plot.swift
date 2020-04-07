@@ -162,7 +162,7 @@ struct PlotInfectionRate: View {
                         }
                     }.stroke(lineWidth: 0.5).foregroundColor(Color.secondary)
                     
-                    // ref line
+                    // ref line (ref == 1.0)
                     Path { (path) in
                         path.move(to: .init(x: 0, y: proxy.size.height / 2))
                         path.addLine(to: .init(x: proxy.size.width, y: proxy.size.height / 2))
