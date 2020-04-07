@@ -10,10 +10,7 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var model = SIRModel()
-    //@State var max = [5000000.0, 1000000.0, 500000, 300000, 100000, 50000, 30000, 10000, 5000, 3000, 1000]
-    //@State var sel = 1
-    //@State var days = [300, 200, 100, 30]
-    //@State var daysSel = 1
+    @State var kappaColor = Color.primary
     var body: some View {
         HStack {
             VStack {
@@ -23,7 +20,7 @@ struct ContentView: View {
                         Spacer()
                         Spacer()
                         Slider(value: $model.kappa, in: (0.0 ... 0.2), minimumValueLabel: Text("0").onTapGesture {
-                            self.model.kappa -= 0.0001
+                                self.model.kappa -= 0.0001
                             if self.model.kappa < 0 {
                                 self.model.kappa = 0
                             }
@@ -33,7 +30,9 @@ struct ContentView: View {
                         }) {
                             Text("Kappa").frame(width: 150)
                         }
-                        Text(String(format: "%.4f", model.kappa)).frame(width: 100)
+                        Text(String(format: "%.4f", model.kappa))
+                            .frame(width: 100)
+                            .foregroundColor(kappaColor)
                         
                         Slider(value: $model.activeSearchSaturation, in: (0.0 ... 5000.0), minimumValueLabel: Text("0").onTapGesture {
                             self.model.activeSearchSaturation -= 1
@@ -46,7 +45,7 @@ struct ContentView: View {
                             Toggle("Kappa saturation", isOn: $model.kappaSaturation)
                             //Text("Kappa saturation").frame(width: 150)
                         }
-                        Text(String(format: "%.1f", model.activeSearchSaturation)).frame(width: 100)
+                        Text(model.kappaSaturation ? String(format: "%.1f", model.activeSearchSaturation) : "unlimited").frame(width: 100)
                     }.frame(height: 100)
                     VStack {
                         Slider(value: $model.lambda, in: (0.0 ... 1.2), minimumValueLabel: Text("0").onTapGesture {
@@ -75,32 +74,68 @@ struct ContentView: View {
                         Text("\(self.model.days[i])").tag(i)
                     }
                 }.pickerStyle(SegmentedPickerStyle())
+                
+                PlotInfectionRate(values: model.result, max: 0.6)
+                    .border(Color.secondary.opacity(0.1)).padding()
+                
             }
             List {
                 Text("Intervention")
                 Button(action: {
                     self.model.kappa = 0.0
                     self.model.lambda = 1.0
+                    self.model.kappaSaturation = false
+                    self.kappaColor = Color.primary
+                    
                 }, label: {
                     Text("Zero")
                 })
                 Button(action: {
                     self.model.kappa = 0.0
                     self.model.lambda = 0.55
+                    self.model.kappaSaturation = false
+                    self.kappaColor = Color.primary
+
                 }, label: {
                     Text("IZP")
                 })
                 Button(action: {
                     self.model.kappa = 0.041
                     self.model.lambda = 0.7
+                    self.model.activeSearchSaturation = 1000.0
+                    self.kappaColor = Color.primary
+
                 }, label: {
                     Text("Current")
                 })
                 Button(action: {
                     self.model.kappa = 0.1
                     self.model.lambda = 0.9
+                    self.model.activeSearchSaturation = 1000.0
+                    self.kappaColor = Color.primary
+
                 }, label: {
                     Text("Economic")
+                })
+                Button(action: {
+                    self.model.kappa = 0.1776
+                    self.model.lambda = 1.0
+                    self.model.activeSearchSaturation = 5000.0
+                    self.model.kappaSaturation = true
+                    self.kappaColor = Color.green
+
+                }, label: {
+                    Text("Ideal").foregroundColor(Color.green)
+                })
+                Button(action: {
+                    self.model.kappa = 0.1775
+                    self.model.lambda = 1.0
+                    self.model.activeSearchSaturation = 5000.0
+                    self.model.kappaSaturation = true
+                    self.kappaColor = Color.orange
+
+                }, label: {
+                    Text("Disaster").foregroundColor(Color.orange)
                 })
                 Spacer()
                 

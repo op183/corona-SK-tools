@@ -141,9 +141,7 @@ class SIRModel: ObservableObject {
             // odhadom asi 4%.
             
             // napriek tomu má na spomalenie šírenia zásadný význam, pretože vahľadáva pacientov "čerstvo" nakazených.
-            
-            // predikcia IZP je z tohoto pohľadu silne podhodnotená a model nekoreluje so súčastným stavom najmä z hľadiska
-            
+                        
             
             // parameter "activeSearchSaturation" predstavuje kapacitné možnosti hygienikov, na Slovenku je ju možné odhadnúť z počiatku inefcie
             // u nás, kde pri pomere nakazení / testovaní jeden deň dosiahla limitnú hranicu 10%, pri 40 tich pozitívnych indikáciaách,
@@ -176,7 +174,8 @@ class SIRModel: ObservableObject {
     }
     
     var result: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double]) {
-        solve()
+        let r = solve()
+        return r
     }
 }
 
