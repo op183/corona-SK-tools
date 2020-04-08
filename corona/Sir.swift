@@ -87,7 +87,7 @@ class SIRModel: ObservableObject {
     // this parameters best fit current Slovak covid situation
     // initial state of model with
     let susceptible = 5500000.0
-    let infectious = 200.0
+    let infectious = 220.0
     @Published var lambda = 0.7 // social distance, has effect on whole population
     @Published var kappa = 0.041 // infectious quarantine effectivity, has effect on infected population
     @Published var activeSearchSaturation = 5000.0
@@ -95,13 +95,15 @@ class SIRModel: ObservableObject {
     
     let latency = 9
     
+    var size = 0
+    
     func solve() -> (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double]) {
         var sir = SIR(susspectible: susceptible, infectious: infectious, recovered: 0, beta: beta, gamma: gamma, lambda: 1.2)
         // state <-> [susceptible, infectious]
         var state = [sir.state()]
-        var infectionrate: [Double] = []
-        var isolated: [Double] = []
-        var hospitalized: [Double] = []
+        var infectionrate: [Double] = [0]
+        var isolated: [Double] = [0]
+        var hospitalized: [Double] = [0]
         
         _ = (0 ..< days[daysSelection]).map { (i)  in
             let _s = state[i]
@@ -169,7 +171,8 @@ class SIRModel: ObservableObject {
             state.append(s_)
             infectionrate.append(s_[1]/_s[1])
         }
-        
+        size = state.count
+        print(hospitalized[22 ... 32])
         return (susceptible: state.map {$0[0]}, infectious: state.map {$0[1]}, isolated: isolated, hospitalized: hospitalized, infectionrate: infectionrate)
     }
     

@@ -61,14 +61,15 @@ struct ContentView: View {
                     Text("R0: \(model.R0)").frame(width: 100)
                 }.padding(.horizontal)
                 
-                Plot(values: model.result, max: model.scale[model.scaleSelection] /*max[sel]*/)
+                Plot(values: model.result, size: model.size, max: model.scale[model.scaleSelection] /*max[sel]*/)
                     .border(Color.secondary.opacity(0.1)).padding()
-                //Text("x: 0 ... 200 days, y: 0 ... 1 milion cases) ").padding(.bottom, 5)
+
                 Picker(selection: $model.scaleSelection, label: Text("Population x 10000").frame(width: 200)) {
                     ForEach(0 ..< model.scale.count) { (i) in
                         Text(String(format: "%.1f", self.model.scale[i]/10000.0)).tag(i)
                     }
                 }.pickerStyle(SegmentedPickerStyle())
+                
                 Picker(selection: $model.daysSelection, label: Text("Days from 06/03/2020").frame(width: 200)) {
                     ForEach(0 ..< model.days.count) { (i) in
                         Text("\(self.model.days[i])").tag(i)

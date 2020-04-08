@@ -10,6 +10,7 @@ import SwiftUI
 
 struct Plot: View {
     let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double])
+    let size: Int
     let max: Double
     let isoDates = ["2020-04-01T00:00:00+0000",
                     "2020-05-01T00:00:00+0000",
@@ -23,51 +24,62 @@ struct Plot: View {
                     "2021-01-01T00:00:00+0000"
     ]
     
-        fileprivate func month(proxy: GeometryProxy, isoDates: [String]) -> Path {
-        // april
-            Path { (path) in
-                var x = CGFloat.zero
-                for isoDate in isoDates where x < proxy.size.width {
-                    let dateFormatter = ISO8601DateFormatter()
-                    let ref = dateFormatter.date(from: "2020-03-06T00:00:00+0000")!
-                    let to = dateFormatter.date(from: isoDate)!
-                    let days = Calendar.current.dateComponents([.day], from: ref, to: to).day!
-                    x = proxy.size.width / CGFloat(self.values.susceptible.count - 1) * CGFloat(days)
-                    print(x, days)
-                    path.move(to: .init(x: x, y: 0))
-                    path.addLine(to: .init(x: x, y: proxy.size.height / 20))
-                }
+    fileprivate func month(proxy: GeometryProxy, isoDates: [String]) -> Path {
+        Path { (path) in
+            var x = CGFloat.zero
+            for isoDate in isoDates where x < proxy.size.width {
+                let dateFormatter = ISO8601DateFormatter()
+                let ref = dateFormatter.date(from: "2020-03-06T00:00:00+0000")!
+                let to = dateFormatter.date(from: isoDate)!
+                let days = Calendar.current.dateComponents([.day], from: ref, to: to).day!
+                x = proxy.size.width / CGFloat(self.size - 1) * CGFloat(days)
+                path.move(to: .init(x: x, y: 0))
+                path.addLine(to: .init(x: x, y: proxy.size.height / 20))
             }
+        }
+    }
+    
+    func daysFrom(isoDate: String, date: Date) -> Int {
+        let isoDate = "2020-03-06T00:00:00+0000"
+        let dateFormatter = ISO8601DateFormatter()
+        let ref = dateFormatter.date(from:isoDate)!
+        return Calendar.current.dateComponents([.day], from: ref, to: date).day!
+    }
+    
+    fileprivate func markday(proxy: GeometryProxy, day: Int, color: Color) -> some View {
+        // april
+        ZStack {
+            Path { (path) in
+                let x = proxy.size.width / CGFloat(self.size - 1) * CGFloat(day)
+                path.move(to: .init(x: x, y: 0))
+                path.addLine(to: .init(x: x, y: proxy.size.height))
+            }.stroke(lineWidth: 0.5).foregroundColor(color)
+        }
     }
     
     var body: some View {
         VStack {
             GeometryReader { proxy in
                 ZStack {
+                    
                     // x grid
                     Path { (path) in
-                        let step = proxy.size.width / CGFloat(self.values.susceptible.count - 1)
+                        let step = proxy.size.width / CGFloat(self.size - 1)
                         stride(from: CGFloat.zero, through: proxy.size.width, by: step * 7).forEach { (x) in
                             // pondelok
+                            if x + 3 * step < proxy.size.width {
                             path.move(to: .init(x: x + 3 * step, y: 0))
                             path.addLine(to: .init(x: x + 3 * step, y: proxy.size.height))
+                            }
                         }
                     }.stroke(lineWidth: 0.5).foregroundColor(Color.secondary)
-                    
+ 
+                    // month marker
                     self.month(proxy: proxy, isoDates: self.isoDates).stroke(lineWidth: 5).foregroundColor(Color.green)
                     
+                    // today marker
+                    self.markday(proxy: proxy, day: self.daysFrom(isoDate: "2020-03-06T00:00:00+0000", date: Date()), color: .green)
                     
-                    // today
-                    Path { (path) in
-                        let isoDate = "2020-03-06T00:00:00+0000"
-                        let dateFormatter = ISO8601DateFormatter()
-                        let ref = dateFormatter.date(from:isoDate)!
-                        let days = Calendar.current.dateComponents([.day], from: ref, to: Date()).day!
-                        let x = proxy.size.width / CGFloat(self.values.susceptible.count - 1) * CGFloat(days)
-                        
-                        path.move(to: .init(x: x, y: 0))
-                        path.addLine(to: .init(x: x, y: proxy.size.height))
-                    }.stroke(lineWidth: 0.5).foregroundColor(Color.green)
                     
                     // y grid
                     Path { (path) in
@@ -82,7 +94,7 @@ struct Plot: View {
                         path.move(to: .init(x: 0, y: proxy.size.height))
                         path.addLines(
                             self.values.infectious.enumerated().map({ (v) -> CGPoint in
-                                CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.values.infectious.count - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
+                                CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
                             })
                         )
                     }.stroke(lineWidth: 1).foregroundColor(Color.red)
@@ -92,7 +104,7 @@ struct Plot: View {
                         path.move(to: .init(x: 0, y: proxy.size.height))
                         path.addLines(
                             self.values.isolated.enumerated().map({ (v) -> CGPoint in
-                                CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.values.isolated.count - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
+                                CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
                             })
                         )
                     }.stroke(lineWidth: 1).foregroundColor(Color.blue)
@@ -103,7 +115,7 @@ struct Plot: View {
                         path.move(to: .init(x: 0, y: proxy.size.height))
                         path.addLines(
                             self.values.hospitalized.enumerated().map({ (v) -> CGPoint in
-                                CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.values.hospitalized.count - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
+                                CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
                             })
                         )
                     }.stroke(lineWidth: 1).foregroundColor(Color.orange)
@@ -113,7 +125,7 @@ struct Plot: View {
                         path.move(to: .init(x: 0, y: proxy.size.height))
                         path.addLines(
                             self.values.susceptible.enumerated().map({ (v) -> CGPoint in
-                                CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.values.susceptible.count - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
+                                CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
                             })
                         )
                     }.stroke(lineWidth: 1).foregroundColor(Color.green)
@@ -128,6 +140,25 @@ struct Plot: View {
 struct PlotInfectionRate: View {
     let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double])
     let max: Double
+    
+    func daysFrom(isoDate: String, date: Date) -> Int {
+        let isoDate = "2020-03-06T00:00:00+0000"
+        let dateFormatter = ISO8601DateFormatter()
+        let ref = dateFormatter.date(from:isoDate)!
+        return Calendar.current.dateComponents([.day], from: ref, to: date).day!
+    }
+    
+    fileprivate func markday(proxy: GeometryProxy, day: Int, color: Color) -> some View {
+        // april
+        ZStack {
+            Path { (path) in
+                let x = proxy.size.width / CGFloat(self.values.susceptible.count - 1) * CGFloat(day)
+                path.move(to: .init(x: x, y: 0))
+                path.addLine(to: .init(x: x, y: proxy.size.height))
+            }.stroke(lineWidth: 0.5).foregroundColor(color)
+        }
+    }
+    
     var body: some View {
         VStack {
             GeometryReader { proxy in
@@ -137,22 +168,15 @@ struct PlotInfectionRate: View {
                         let step = proxy.size.width / CGFloat(self.values.susceptible.count - 1)
                         stride(from: CGFloat.zero, through: proxy.size.width, by: step * 7).forEach { (x) in
                             // pondelok
-                            path.move(to: .init(x: x + 3 * step, y: 0))
-                            path.addLine(to: .init(x: x + 3 * step, y: proxy.size.height))
+                            if x + 3 * step < proxy.size.width {
+                                path.move(to: .init(x: x + 3 * step, y: 0))
+                                path.addLine(to: .init(x: x + 3 * step, y: proxy.size.height))
+                            }
                         }
                     }.stroke(lineWidth: 0.5).foregroundColor(Color.secondary)
                     
-                    // today
-                    Path { (path) in
-                        let isoDate = "2020-03-06T00:00:00+0000"
-                        let dateFormatter = ISO8601DateFormatter()
-                        let ref = dateFormatter.date(from:isoDate)!
-                        let days = Calendar.current.dateComponents([.day], from: ref, to: Date()).day!
-                        let x = proxy.size.width / CGFloat(self.values.susceptible.count - 1) * CGFloat(days)
-                        
-                        path.move(to: .init(x: x, y: 0))
-                        path.addLine(to: .init(x: x, y: proxy.size.height))
-                    }.stroke(lineWidth: 0.5).foregroundColor(Color.green)
+                    // today marker
+                    self.markday(proxy: proxy, day: self.daysFrom(isoDate: "2020-03-06T00:00:00+0000", date: Date()), color: .green)
                     
                     // y grid
                     Path { (path) in
@@ -170,12 +194,15 @@ struct PlotInfectionRate: View {
                     
                     // infectionrate
                     Path { (path) in
+                        
                         path.move(to: .init(x: 0, y: proxy.size.height))
-                        path.addLines(
-                            self.values.infectionrate.enumerated().map({ (v) -> CGPoint in
-                                CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.values.infectionrate.count - 1), y: Double(proxy.size.height) - (v.element - 0.7) * Double(proxy.size.height)/self.max)
-                            })
-                        )
+                        let enumeration = self.values.infectionrate[1...].enumerated()
+                        let points = enumeration.map({ (v) -> CGPoint in
+                            CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.values.infectionrate.count - 1), y: Double(proxy.size.height) - (v.element - 0.7) * Double(proxy.size.height)/self.max)
+                        })
+                            
+                        path.addLines(points)
+                        
                     }.stroke(lineWidth: 1).foregroundColor(Color.pink)
                     
                 }
