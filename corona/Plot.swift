@@ -6,10 +6,13 @@
 //  Copyright © 2020 Ivo Vacek. All rights reserved.
 //
 
+
+// TODO need to be rewritten (structured and simplyfied)
+
 import SwiftUI
 
 struct Plot: View {
-    let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double])
+    let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], mortality: [Double], mortalityRate: [Double])
     let size: Int
     let max: Double
     let isoDates = ["2020-04-01T00:00:00+0000",
@@ -109,7 +112,7 @@ struct Plot: View {
                         )
                     }.stroke(lineWidth: 1).foregroundColor(Color.blue)
                     
-                    // hospitalized
+                    // hospitalized (not realy! it is infectious not early isolated)
                     
                     Path { (path) in
                         path.move(to: .init(x: 0, y: proxy.size.height))
@@ -120,7 +123,7 @@ struct Plot: View {
                         )
                     }.stroke(lineWidth: 1).foregroundColor(Color.orange)
                     
-                    
+                    // identified
                     Path { (path) in
                         path.move(to: .init(x: 0, y: proxy.size.height))
                         path.addLines(
@@ -129,6 +132,16 @@ struct Plot: View {
                             })
                         )
                     }.stroke(Color.yellow, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
+                    
+                    // mortality
+                    Path { (path) in
+                        path.move(to: .init(x: 0, y: proxy.size.height))
+                        path.addLines(
+                            self.values.mortality.enumerated().map({ (v) -> CGPoint in
+                                CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
+                            })
+                        )
+                    }.foregroundColor(Color.red.opacity(0.3))//.stroke(Color.red, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
                     
                     // susceptible
                     Path { (path) in
@@ -148,7 +161,7 @@ struct Plot: View {
 
 
 struct PlotInfectionRate: View {
-    let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double])
+    let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], mortality: [Double], mortalityRate: [Double])
     let max: Double
     
     func daysFrom(isoDate: String, date: Date) -> Int {
@@ -190,7 +203,7 @@ struct PlotInfectionRate: View {
                     
                     // y grid
                     Path { (path) in
-                        stride(from: CGFloat.zero, through: proxy.size.height, by: proxy.size.height / CGFloat(6)).forEach { (y) in
+                        stride(from: CGFloat.zero, through: proxy.size.height, by: proxy.size.height / CGFloat(10)).forEach { (y) in
                             path.move(to: .init(x: 0, y: y))
                             path.addLine(to: .init(x: proxy.size.width, y: y))
                         }
@@ -200,20 +213,36 @@ struct PlotInfectionRate: View {
                     Path { (path) in
                         path.move(to: .init(x: 0, y: proxy.size.height / 2))
                         path.addLine(to: .init(x: proxy.size.width, y: proxy.size.height / 2))
-                    }.stroke(Color.blue, style: StrokeStyle.init(lineWidth: 3, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
+                    }.stroke(Color.yellow, style: StrokeStyle.init(lineWidth: 0.5, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
                     
                     // infectionrate
                     Path { (path) in
-                        
                         path.move(to: .init(x: 0, y: proxy.size.height))
                         let enumeration = self.values.infectionrate[1...].enumerated()
                         let points = enumeration.map({ (v) -> CGPoint in
-                            CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.values.infectionrate.count - 1), y: Double(proxy.size.height) - (v.element - 0.7) * Double(proxy.size.height)/self.max)
+                            CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.values.infectionrate.count - 1), y: Double(proxy.size.height) - (v.element - 0.75) * Double(proxy.size.height)/self.max)
                         })
                             
                         path.addLines(points)
-                        
                     }.stroke(lineWidth: 1).foregroundColor(Color.pink)
+                    
+                    // mortality
+                    Path { (path) in
+                        let enumeration = self.values.mortalityRate.enumerated()
+                        let v = enumeration.compactMap { (e) -> (Int, Double)? in
+                            if (e.element == Double.infinity) || e.offset < 10 {
+                                return nil
+                            } else {
+                                return e
+                            }
+                        }
+                        let points = v.map({ (v) -> CGPoint in
+                            CGPoint(x: Double(v.0) * Double(proxy.size.width) / Double(self.values.mortality.count - 1), y: Double(proxy.size.height) - (v.1) * Double(proxy.size.height) / 10)
+                        })
+                        
+                        path.move(to: .init(x: 0, y: proxy.size.height))
+                        path.addLines(points)
+                    }.stroke(lineWidth: 1).foregroundColor(Color.primary)
                     
                 }
             }

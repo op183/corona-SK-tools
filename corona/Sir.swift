@@ -92,18 +92,21 @@ class SIRModel: ObservableObject {
     @Published var kappa = 0.041 // infectious quarantine effectivity, has effect on infected population
     @Published var activeSearchSaturation = 5000.0
     @Published var kappaSaturation = false
+    @Published var icu = 5000.0
     
     let latency = 9
     
     var size = 0
     
-    func solve() -> (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double]) {
+    func solve() -> (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], mortality: [Double], mortalityRate: [Double]) {
         var sir = SIR(susspectible: susceptible, infectious: infectious, recovered: 0, beta: beta, gamma: gamma, lambda: 1.2)
         // state <-> [susceptible, infectious]
         var state = [sir.state()]
         var infectionrate: [Double] = [0]
         var isolated: [Double] = [0]
         var hospitalized: [Double] = [0]
+        var mortalityRate: [Double] = [0.0]
+        var mortality: [Double] = [0.0]
         
         _ = (0 ..< days[daysSelection]).map { (i)  in
             let _s = state[i]
@@ -153,6 +156,8 @@ class SIRModel: ObservableObject {
             // slovenská realita vykazuje na základ dát od začiatku epidémie kappa 4% a saturáciu 200, kappa sa s postupom pandémie príliš
             // meniť nebude pokiaľ by sa zachovala dnešná trajektória nárastu (cca 7% denne)
             
+            
+            // TODO  hard limit should be replaced with soft limiting funcion
             let det = min(s_[1] * kappa, kappaSaturation ? activeSearchSaturation : susceptible)
             
             // 25% need special care, rest stay in home quarantine
@@ -174,10 +179,20 @@ class SIRModel: ObservableObject {
         let identified = zip(isolated, hospitalized).map { (v) -> Double in
             max(v.0, v.1)
         }
-        return (susceptible: state.map {$0[0]}, infectious: state.map {$0[1]}, isolated: isolated, hospitalized: hospitalized, infectionrate: infectionrate, identified: identified)
+        
+        mortality = zip(state.map {$0[1]}, identified).map { (v) -> Double in
+            // TODO  hard limit should be replaced with soft limiting funcion
+            let healtCareCapacity = 1.0 * max(v.1 * 0.1, icu) / icu
+            return (v.0 * 0.0025) * healtCareCapacity //* 0.05
+        }
+        
+        mortalityRate = zip(mortality, identified).enumerated().map { (v) -> Double in
+            v.element.0 * 100 / v.element.1
+        }
+        return (susceptible: state.map {$0[0]}, infectious: state.map {$0[1]}, isolated: isolated, hospitalized: hospitalized, infectionrate: infectionrate, identified: identified, mortality: mortality, mortalityRate: mortalityRate)
     }
     
-    var result: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double]) {
+    var result: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], mortality: [Double], mortalityRate: [Double]) {
         let r = solve()
         return r
     }

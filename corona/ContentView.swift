@@ -14,11 +14,8 @@ struct ContentView: View {
     var body: some View {
         HStack {
             VStack {
-                
                 HStack {
                     VStack {
-                        Spacer()
-                        Spacer()
                         Slider(value: $model.kappa, in: (0.0 ... 0.2), minimumValueLabel: Text("0").onTapGesture {
                                 self.model.kappa -= 0.0001
                             if self.model.kappa < 0 {
@@ -42,8 +39,8 @@ struct ContentView: View {
                             }, maximumValueLabel: Text("5000.0").onTapGesture {
                                 self.model.activeSearchSaturation += 1
                         }) {
-                            Toggle("Kappa saturation", isOn: $model.kappaSaturation)
-                            //Text("Kappa saturation").frame(width: 150)
+                            Toggle("Saturation", isOn: $model.kappaSaturation)
+                                .frame(width: 150)
                         }
                         HStack {
                             Text(model.kappaSaturation ? String(format: "%.1f", model.activeSearchSaturation) : "unlimited").frame(width: 100)
@@ -60,10 +57,21 @@ struct ContentView: View {
                             Text("Lambda").frame(width: 150)
                         }
                         Text(String(format: "%.3f", model.lambda)).frame(width: 100)
-                        Spacer()
+                        
+                        Slider(value: $model.icu, in: (0.0 ... 5000.0), minimumValueLabel: Text("0").onTapGesture {
+                            self.model.icu -= 1
+                            }, maximumValueLabel: Text("5000.0").onTapGesture {
+                                self.model.icu += 1
+                        }) {
+                            Text("ICU").frame(width: 150)
+                        }
+                        Text(String(format: "%.1f", model.icu)).frame(width: 100)
+                        //Spacer()
                     }.frame(height: 100)
-                    Text("R0: \(model.R0)").frame(width: 100)
-                }.padding(.horizontal)
+                    Text("R0: \(model.R0)").font(.title).padding(.horizontal)
+                }
+                .padding(.horizontal)
+                .padding(.top)
                 
                 Plot(values: model.result, size: model.size, max: model.scale[model.scaleSelection] /*max[sel]*/)
                     .border(Color.secondary.opacity(0.1)).padding()
@@ -80,9 +88,12 @@ struct ContentView: View {
                     }
                 }.pickerStyle(SegmentedPickerStyle())
                 
-                PlotInfectionRate(values: model.result, max: 0.6)
+                PlotInfectionRate(values: model.result, max: 0.5)
                     .border(Color.secondary.opacity(0.1)).padding()
-                Text("Infection rate 0.7 ... 1.3").padding(.bottom)
+                HStack {
+                    Text("Infection rate 0.75 ... 1.25")
+                    Text("Morbidity 0 ... 10%")
+                }.padding(.bottom)
                 
             }
             List {
@@ -108,7 +119,7 @@ struct ContentView: View {
                 Button(action: {
                     self.model.kappa = 0.041
                     self.model.lambda = 0.7
-                    self.model.activeSearchSaturation = 1000.0
+                    self.model.activeSearchSaturation = 450.0
                     self.kappaColor = Color.primary
 
                 }, label: {
