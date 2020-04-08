@@ -97,7 +97,7 @@ class SIRModel: ObservableObject {
     
     var size = 0
     
-    func solve() -> (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double]) {
+    func solve() -> (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double]) {
         var sir = SIR(susspectible: susceptible, infectious: infectious, recovered: 0, beta: beta, gamma: gamma, lambda: 1.2)
         // state <-> [susceptible, infectious]
         var state = [sir.state()]
@@ -154,7 +154,6 @@ class SIRModel: ObservableObject {
             // meniť nebude pokiaľ by sa zachovala dnešná trajektória nárastu (cca 7% denne)
             
             let det = min(s_[1] * kappa, kappaSaturation ? activeSearchSaturation : susceptible)
-            isolated.append(det)
             
             // 25% need special care, rest stay in home quarantine
             // + 10% of infectious with 3 days latency
@@ -162,8 +161,8 @@ class SIRModel: ObservableObject {
             if i > latency {
                 l = state[i - latency][1] * 0.2
             }
-            hospitalized.append(isolated[i] * 0.25 + l)
-            
+            hospitalized.append(det * 0.25 + l)
+            isolated.append(det)
             
             // the rest stay in population and spread the infection
             //s_[1] *= 1 - kappa
@@ -172,11 +171,13 @@ class SIRModel: ObservableObject {
             infectionrate.append(s_[1]/_s[1])
         }
         size = state.count
-        print(hospitalized[22 ... 32])
-        return (susceptible: state.map {$0[0]}, infectious: state.map {$0[1]}, isolated: isolated, hospitalized: hospitalized, infectionrate: infectionrate)
+        let identified = zip(isolated, hospitalized).map { (v) -> Double in
+            max(v.0, v.1)
+        }
+        return (susceptible: state.map {$0[0]}, infectious: state.map {$0[1]}, isolated: isolated, hospitalized: hospitalized, infectionrate: infectionrate, identified: identified)
     }
     
-    var result: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double]) {
+    var result: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double]) {
         let r = solve()
         return r
     }

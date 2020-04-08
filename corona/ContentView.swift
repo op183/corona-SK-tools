@@ -45,7 +45,11 @@ struct ContentView: View {
                             Toggle("Kappa saturation", isOn: $model.kappaSaturation)
                             //Text("Kappa saturation").frame(width: 150)
                         }
-                        Text(model.kappaSaturation ? String(format: "%.1f", model.activeSearchSaturation) : "unlimited").frame(width: 100)
+                        HStack {
+                            Text(model.kappaSaturation ? String(format: "%.1f", model.activeSearchSaturation) : "unlimited").frame(width: 100)
+                            Text(String(format: "%.1f (required testing capacity)", 0.2 / model.kappa * model.activeSearchSaturation))
+                                .opacity(model.kappaSaturation ? 1: 0.3)//.frame(width: 100)
+                        }
                     }.frame(height: 100)
                     VStack {
                         Slider(value: $model.lambda, in: (0.0 ... 1.2), minimumValueLabel: Text("0").onTapGesture {

@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct Plot: View {
-    let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double])
+    let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double])
     let size: Int
     let max: Double
     let isoDates = ["2020-04-01T00:00:00+0000",
@@ -120,6 +120,16 @@ struct Plot: View {
                         )
                     }.stroke(lineWidth: 1).foregroundColor(Color.orange)
                     
+                    
+                    Path { (path) in
+                        path.move(to: .init(x: 0, y: proxy.size.height))
+                        path.addLines(
+                            self.values.identified.enumerated().map({ (v) -> CGPoint in
+                                CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
+                            })
+                        )
+                    }.stroke(Color.yellow, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
+                    
                     // susceptible
                     Path { (path) in
                         path.move(to: .init(x: 0, y: proxy.size.height))
@@ -138,7 +148,7 @@ struct Plot: View {
 
 
 struct PlotInfectionRate: View {
-    let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double])
+    let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double])
     let max: Double
     
     func daysFrom(isoDate: String, date: Date) -> Int {
@@ -190,7 +200,7 @@ struct PlotInfectionRate: View {
                     Path { (path) in
                         path.move(to: .init(x: 0, y: proxy.size.height / 2))
                         path.addLine(to: .init(x: proxy.size.width, y: proxy.size.height / 2))
-                    }.stroke(Color.blue, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
+                    }.stroke(Color.blue, style: StrokeStyle.init(lineWidth: 3, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
                     
                     // infectionrate
                     Path { (path) in
