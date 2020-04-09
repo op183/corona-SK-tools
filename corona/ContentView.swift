@@ -11,6 +11,7 @@ import SwiftUI
 struct ContentView: View {
     @ObservedObject var model = SIRModel()
     @State var kappaColor = Color.primary
+    @State var day = 0
     var body: some View {
         HStack {
             VStack {
@@ -32,18 +33,19 @@ struct ContentView: View {
                             .foregroundColor(kappaColor)
                         
                         Slider(value: $model.activeSearchSaturation, in: (0.0 ... 5000.0), minimumValueLabel: Text("0").onTapGesture {
-                            self.model.activeSearchSaturation -= 1
+                            self.model.activeSearchSaturation -= 10
                             if self.model.activeSearchSaturation < 0 {
                                 self.model.activeSearchSaturation = 0
                             }
                             }, maximumValueLabel: Text("5000.0").onTapGesture {
-                                self.model.activeSearchSaturation += 1
+                                self.model.activeSearchSaturation += 10
                         }) {
                             Toggle("PCR Limit", isOn: $model.kappaSaturation)
                                 .frame(width: 150)
                         }
                         HStack {
                             Text(model.kappaSaturation ? String(format: "%.1f", model.activeSearchSaturation) : "unlimited").frame(width: 100)
+                            Spacer()
                             Text(String(format: "%.1f (required testing capacity)", 0.2 / model.kappa * model.activeSearchSaturation))
                                 .opacity(model.kappaSaturation ? 1: 0.3)//.frame(width: 100)
                         }
@@ -67,20 +69,46 @@ struct ContentView: View {
                             Toggle("ICU Limit", isOn: $model.icuSaturation)
                             .frame(width: 150)
                         }
-                        Text(model.icuSaturation ? String(format: "%.1f", model.icu) : "unlimited").frame(width: 100)
+                        HStack {
+                            Text(model.icuSaturation ? String(format: "%.1f", model.icu) : "unlimited").frame(width: 100)
+                            
+                            Spacer()
+                            
+                            Stepper(onIncrement: {
+                                self.day += 1
+                            }, onDecrement: {
+                                if self.day > 0 {
+                                    self.day -= 1
+                                }
+                            }) {
+                                Text("Day")
+                            }
+                            Stepper(onIncrement: {
+                                self.day += 7
+                            }, onDecrement: {
+                                if self.day > 7 {
+                                    self.day -= 7
+                                }
+                            }) {
+                                Text("Week")
+                            }
+                        }
                         //Spacer()
                     }.frame(height: 100)
-                    VStack(alignment: .trailing) {
-                        Text("R0").font(.title) + Text("kappa=0").font(.footnote)
+                    VStack {
+                        Text("R0").font(.title)
+                        Text("(kappa=0)").font(.footnote)
                         Text(model.R0)
                             .font(.title)
                             .frame(width: 80)
-                    }.padding()
+                        Spacer()
+                        
+                    }.frame(height: 100)
                 }
                 .padding(.horizontal)
                 .padding(.top)
                 
-                Plot(values: model.result, size: model.size, max: model.scale[model.scaleSelection] /*max[sel]*/)
+                Plot(values: model.result, size: model.size, max: model.scale[model.scaleSelection], day: day)
                     .border(Color.secondary.opacity(0.1)).padding()
 
                 Picker(selection: $model.scaleSelection, label: Text("Population x 10000").frame(width: 200)) {

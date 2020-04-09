@@ -11,10 +11,40 @@
 
 import SwiftUI
 
+/*
+struct MonthMarker: View {
+    let size: Int
+    let proxy: GeometryProxy
+    let isoRefDate = "2020-03-06T00:00:00+0000"
+    
+    func x(day: Int) -> CGFloat {
+        proxy.size.width / CGFloat(self.size - 1) * CGFloat(day)
+    }
+    func days() -> [Int] {
+        let dateFormatter = ISO8601DateFormatter()
+        let ref = dateFormatter.date(from: "2020-03-06T00:00:00+0000")!
+        
+    }
+    
+    var body: some View {
+        ZStack {
+            Path { (path) in
+                var x = CGFloat.zero
+                for day in days  {
+                    x = proxy.size.width / CGFloat(self.size - 1) * CGFloat(day)
+                    path.move(to: .init(x: x, y: 0))
+                    path.addLine(to: .init(x: x, y: proxy.size.height / 20))
+                }
+            }.stroke(lineWidth: 5).foregroundColor(Color.green)
+        }
+    }
+}*/
+
 struct Plot: View {
     let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], mortality: [Double], mortalityRate: [Double])
     let size: Int
     let max: Double
+    let day: Int
     let isoDates = ["2020-04-01T00:00:00+0000",
                     "2020-05-01T00:00:00+0000",
                     "2020-06-01T00:00:00+0000",
@@ -27,17 +57,32 @@ struct Plot: View {
                     "2021-01-01T00:00:00+0000"
     ]
     
-    fileprivate func month(proxy: GeometryProxy, isoDates: [String]) -> Path {
-        Path { (path) in
-            var x = CGFloat.zero
-            for isoDate in isoDates where x < proxy.size.width {
-                let dateFormatter = ISO8601DateFormatter()
-                let ref = dateFormatter.date(from: "2020-03-06T00:00:00+0000")!
-                let to = dateFormatter.date(from: isoDate)!
-                let days = Calendar.current.dateComponents([.day], from: ref, to: to).day!
-                x = proxy.size.width / CGFloat(self.size - 1) * CGFloat(days)
-                path.move(to: .init(x: x, y: 0))
-                path.addLine(to: .init(x: x, y: proxy.size.height / 20))
+    fileprivate func month(proxy: GeometryProxy, isoDates: [String]) -> some View {
+        
+        var xdays: [CGFloat] = []
+
+        for isoDate in isoDates {
+            let dateFormatter = ISO8601DateFormatter()
+            let ref = dateFormatter.date(from: "2020-03-06T00:00:00+0000")!
+            let to = dateFormatter.date(from: isoDate)!
+            let days = Calendar.current.dateComponents([.day], from: ref, to: to).day!
+            xdays.append(proxy.size.width / CGFloat(self.size - 1) * CGFloat(days))
+        }
+        let xdaysInRange = xdays.filter { (x) -> Bool in
+            x < proxy.size.width
+        }
+        return ZStack {
+            Path { (path) in
+                for x in xdaysInRange {
+                    path.move(to: .init(x: x, y: 0))
+                    path.addLine(to: .init(x: x, y: proxy.size.height / 20))
+                }
+            }.stroke(lineWidth: 5).foregroundColor(Color.green)
+            ForEach(0 ..< xdaysInRange.count) { (i) in
+                Text("\((i + 4) % 12)")
+                    .font(.system(size: 11, weight: .light, design: .monospaced))
+                    .foregroundColor(Color.green)
+                    .position(x: xdays[i], y:  -10)
             }
         }
     }
@@ -48,15 +93,28 @@ struct Plot: View {
         let ref = dateFormatter.date(from:isoDate)!
         return Calendar.current.dateComponents([.day], from: ref, to: date).day!
     }
+    func date(offset: Int) -> String {
+        let isoDate = "2020-03-06T00:00:00+0000"
+        let dateFormatter = ISO8601DateFormatter()
+        let ref = dateFormatter.date(from:isoDate)!
+        let calendar = Calendar.current
+        let date = calendar.date(byAdding: .day, value: offset, to: ref)!
+        let day = calendar.component(.day, from: date)
+        return day.description
+    }
     
     fileprivate func markday(proxy: GeometryProxy, day: Int, color: Color) -> some View {
-        // april
-        ZStack {
+        let x = proxy.size.width / CGFloat(self.size - 1) * CGFloat(day)
+        return ZStack {
             Path { (path) in
-                let x = proxy.size.width / CGFloat(self.size - 1) * CGFloat(day)
                 path.move(to: .init(x: x, y: 0))
                 path.addLine(to: .init(x: x, y: proxy.size.height))
             }.stroke(lineWidth: 0.5).foregroundColor(color)
+            
+            Text(date(offset: day))
+                .font(.system(size: 11, weight: .light, design: .monospaced))
+                .foregroundColor(Color.green)
+                .position(x: x, y:  proxy.size.height + 10)
         }
     }
     
@@ -78,10 +136,11 @@ struct Plot: View {
                     }.stroke(lineWidth: 0.5).foregroundColor(Color.secondary)
  
                     // month marker
-                    self.month(proxy: proxy, isoDates: self.isoDates).stroke(lineWidth: 5).foregroundColor(Color.green)
+                    self.month(proxy: proxy, isoDates: self.isoDates).id(UUID())
                     
-                    // today marker
-                    self.markday(proxy: proxy, day: self.daysFrom(isoDate: "2020-03-06T00:00:00+0000", date: Date()), color: .green)
+                    // day marker
+                    self.markday(proxy: proxy, day: self.day, color: .green)
+                    //self.markday(proxy: proxy, day: self.daysFrom(isoDate: "2020-03-06T00:00:00+0000", date: Date()), color: .green)
                     
                     
                     // y grid
