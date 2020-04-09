@@ -13,6 +13,7 @@ struct ContentView: View {
     @State var kappaColor = Color.primary
     @State var day = 0
     
+    
     var body: some View {
         HStack {
             VStack {
