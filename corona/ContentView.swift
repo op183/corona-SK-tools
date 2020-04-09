@@ -39,7 +39,7 @@ struct ContentView: View {
                             }, maximumValueLabel: Text("5000.0").onTapGesture {
                                 self.model.activeSearchSaturation += 1
                         }) {
-                            Toggle("Saturation", isOn: $model.kappaSaturation)
+                            Toggle("PCR Limit", isOn: $model.kappaSaturation)
                                 .frame(width: 150)
                         }
                         HStack {
@@ -63,12 +63,19 @@ struct ContentView: View {
                             }, maximumValueLabel: Text("5000.0").onTapGesture {
                                 self.model.icu += 1
                         }) {
-                            Text("ICU").frame(width: 150)
+                            //Text("ICU").frame(width: 150)
+                            Toggle("ICU Limit", isOn: $model.icuSaturation)
+                            .frame(width: 150)
                         }
-                        Text(String(format: "%.1f", model.icu)).frame(width: 100)
+                        Text(model.icuSaturation ? String(format: "%.1f", model.icu) : "unlimited").frame(width: 100)
                         //Spacer()
                     }.frame(height: 100)
-                    Text("R0: \(model.R0)").font(.title).padding(.horizontal)
+                    VStack(alignment: .trailing) {
+                        Text("R0").font(.title) + Text("kappa=0").font(.footnote)
+                        Text(model.R0)
+                            .font(.title)
+                            .frame(width: 80)
+                    }.padding()
                 }
                 .padding(.horizontal)
                 .padding(.top)

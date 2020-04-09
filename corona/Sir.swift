@@ -93,6 +93,7 @@ class SIRModel: ObservableObject {
     @Published var activeSearchSaturation = 5000.0
     @Published var kappaSaturation = false
     @Published var icu = 5000.0
+    @Published var icuSaturation = false
     
     let latency = 9
     
@@ -182,7 +183,7 @@ class SIRModel: ObservableObject {
         
         mortality = zip(state.map {$0[1]}, identified).map { (v) -> Double in
             // TODO  hard limit should be replaced with soft limiting funcion
-            let healtCareCapacity = 1.0 * max(v.1 * 0.1, icu) / icu
+            let healtCareCapacity = 1.0 * max(icuSaturation ? v.1 * 0.1 : 0, icu) / icu
             return (v.0 * 0.0025) * healtCareCapacity //* 0.05
         }
         

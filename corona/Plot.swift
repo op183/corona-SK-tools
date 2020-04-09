@@ -141,6 +141,7 @@ struct Plot: View {
                                 CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
                             })
                         )
+                        path.addLine(to: .init(x: proxy.size.width, y: proxy.size.height))
                     }.foregroundColor(Color.red.opacity(0.3))//.stroke(Color.red, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
                     
                     // susceptible
