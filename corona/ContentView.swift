@@ -12,6 +12,7 @@ struct ContentView: View {
     @ObservedObject var model = SIRModel()
     @State var kappaColor = Color.primary
     @State var day = 0
+    
     var body: some View {
         HStack {
             VStack {
@@ -189,7 +190,6 @@ struct ContentView: View {
                 }, label: {
                     Text("Disaster").foregroundColor(Color.orange)
                 })
-                Spacer()
                 
             }.frame(width: 100)
         }
