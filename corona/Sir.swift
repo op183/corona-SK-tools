@@ -95,9 +95,30 @@ class SIRModel: ObservableObject {
     @Published var icu = 5000.0
     @Published var icuSaturation = false
     
-    let latency = 9
+    let latency = 9 // odhad postavený na spodnej hranici intervalu prahu testovatelnosti + stredná doba imunizácie
     
     var size = 0
+    
+    func logisticMorbidity(indicated: Double, icu: Double) -> Double {
+        // value << limit => value
+        // value > limit => limit
+        // k parameter
+        let icu = icuSaturation ? icu : 10000
+        // healt care efectivity koefficient (reduce morbidity with perfect healt care)
+        // if value << limit
+        // n = 0 ..... natural probability of death reduce by 100%
+        // n = 1 ..... natural probability of death reduce by 50%
+        // n = 10 .... natural probability of death reduce by 10%
+        
+        // if value >=limit, natural probability of death is not reduces anymore
+        let a = 0.5 // probability of hospitality
+        let b = 0.1 // reported natural morbidity without healt care
+        let n = 1.0 // control efektivity of healt care
+        let p = pow(1.005, indicated * 0.1)
+        let k = pow(1.005, icu * 1.4)
+        let r = (p / (p + k) + n) / (1 + n)    // logistic function 0 if value << limit, 1 if value > limit
+        return r * indicated * a * b
+    }
     
     func solve() -> (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], mortality: [Double], mortalityRate: [Double]) {
         var sir = SIR(susspectible: susceptible, infectious: infectious, recovered: 0, beta: beta, gamma: gamma, lambda: 1.2)
@@ -181,10 +202,9 @@ class SIRModel: ObservableObject {
             max(v.0, v.1)
         }
         
-        mortality = zip(state.map {$0[1]}, identified).map { (v) -> Double in
-            // TODO  hard limit should be replaced with soft limiting funcion
-            let healtCareCapacity = 1.0 * max(icuSaturation ? v.1 * 0.1 : 0, icu) / icu
-            return (v.0 * 0.0025) * healtCareCapacity //* 0.05
+        mortality = state.map { (v) -> Double in
+            let r = logisticMorbidity(indicated: v[1] * 0.08, icu: icu)
+            return r
         }
         
         mortalityRate = zip(mortality, identified).enumerated().map { (v) -> Double in

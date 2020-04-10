@@ -104,6 +104,15 @@ struct ContentView: View {
                             .font(.title)
                             .frame(width: 80)
                         Spacer()
+                        Spacer()
+                        Button(action: {
+                            let isoDate = "2020-03-06T00:00:00+0000"
+                            let dateFormatter = ISO8601DateFormatter()
+                            let ref = dateFormatter.date(from:isoDate)!
+                            self.day = Calendar.current.dateComponents([.day], from: ref, to: Date()).day!
+                        }) {
+                            Text("Today")
+                        }
                         
                     }.frame(height: 100)
                 }
