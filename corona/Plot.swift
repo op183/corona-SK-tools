@@ -186,7 +186,7 @@ struct Plot: View {
                     }.stroke(lineWidth: 1).foregroundColor(Color.green)
                     
                     
-                    // real SK cases
+                    // real SK cases 
                     Path { (path) in
                         path.move(to: .init(x: 0, y: proxy.size.height))
                         path.addLines(
