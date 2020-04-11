@@ -21,3 +21,6 @@ SIR model definuje
    
     zníženie pravdepodobnosti šírenia infekcie plošnými opatreniami (aka "mobilita", rúška, zastavená výroba atď.)
     
+
+
+Túto teóriu potvrdzuje aj článok ku ktorému som sa dnes dostal https://www.worldpop.org/events/COVID_NPI
