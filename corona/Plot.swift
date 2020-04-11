@@ -174,6 +174,7 @@ struct Plot: View {
                         path.addLine(to: .init(x: proxy.size.width, y: proxy.size.height))
                     }.foregroundColor(Color.red.opacity(0.3))//.stroke(Color.red, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
                     
+                    Group {
                     // susceptible
                     Path { (path) in
                         path.move(to: .init(x: 0, y: proxy.size.height))
@@ -183,6 +184,18 @@ struct Plot: View {
                             })
                         )
                     }.stroke(lineWidth: 1).foregroundColor(Color.green)
+                    
+                    
+                    // susceptible
+                    Path { (path) in
+                        path.move(to: .init(x: 0, y: proxy.size.height))
+                        path.addLines(
+                            sk_rd.enumerated().map({ (v) -> CGPoint in
+                                CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
+                            })
+                        )
+                    }.stroke(lineWidth: 1).foregroundColor(Color.primary)
+                    }
                     
                 }
             }
@@ -280,3 +293,42 @@ struct PlotInfectionRate: View {
         }
     }
 }
+
+
+// sk data
+let sk_rd: [Double] = [1,
+3,
+5,
+7,
+8.5,
+10,
+21,
+32,
+44,
+61,
+72,
+97,
+105,
+123,
+137,
+178,
+185,
+204,
+216,
+226,
+269,
+292,
+314,
+336,
+363,
+400,
+426,
+450,
+471,
+485,
+534,
+581,
+682,
+701,
+715,
+728]
