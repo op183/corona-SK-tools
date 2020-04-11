@@ -163,7 +163,7 @@ struct ContentView: View {
                     Text("IZP")
                 })
                 Button(action: {
-                    self.model.kappa = 0.041
+                    self.model.kappa = 0.0425
                     self.model.lambda = 0.7
                     self.model.activeSearchSaturation = 450.0
                     self.kappaColor = Color.primary
