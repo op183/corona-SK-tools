@@ -11,37 +11,8 @@
 
 import SwiftUI
 
-/*
-struct MonthMarker: View {
-    let size: Int
-    let proxy: GeometryProxy
-    let isoRefDate = "2020-03-06T00:00:00+0000"
-    
-    func x(day: Int) -> CGFloat {
-        proxy.size.width / CGFloat(self.size - 1) * CGFloat(day)
-    }
-    func days() -> [Int] {
-        let dateFormatter = ISO8601DateFormatter()
-        let ref = dateFormatter.date(from: "2020-03-06T00:00:00+0000")!
-        
-    }
-    
-    var body: some View {
-        ZStack {
-            Path { (path) in
-                var x = CGFloat.zero
-                for day in days  {
-                    x = proxy.size.width / CGFloat(self.size - 1) * CGFloat(day)
-                    path.move(to: .init(x: x, y: 0))
-                    path.addLine(to: .init(x: x, y: proxy.size.height / 20))
-                }
-            }.stroke(lineWidth: 5).foregroundColor(Color.green)
-        }
-    }
-}*/
-
 struct Plot: View {
-    let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], mortality: [Double], mortalityRate: [Double])
+    let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], death: [Double], mortalityRate: [Double])
     let size: Int
     let max: Double
     let day: Int
@@ -196,7 +167,7 @@ struct Plot: View {
                     Path { (path) in
                         path.move(to: .init(x: 0, y: proxy.size.height))
                         path.addLines(
-                            self.values.mortality.enumerated().map({ (v) -> CGPoint in
+                            self.values.death.enumerated().map({ (v) -> CGPoint in
                                 CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
                             })
                         )
@@ -221,7 +192,7 @@ struct Plot: View {
 
 
 struct PlotInfectionRate: View {
-    let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], mortality: [Double], mortalityRate: [Double])
+    let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], death: [Double], mortalityRate: [Double])
     let max: Double
     
     func daysFrom(isoDate: String, date: Date) -> Int {
@@ -297,7 +268,7 @@ struct PlotInfectionRate: View {
                             }
                         }
                         let points = v.map({ (v) -> CGPoint in
-                            CGPoint(x: Double(v.0) * Double(proxy.size.width) / Double(self.values.mortality.count - 1), y: Double(proxy.size.height) - (v.1) * Double(proxy.size.height) / 10)
+                            CGPoint(x: Double(v.0) * Double(proxy.size.width) / Double(self.values.death.count - 1), y: Double(proxy.size.height) - (v.1) * Double(proxy.size.height) / 10)
                         })
                         
                         path.move(to: .init(x: 0, y: proxy.size.height))

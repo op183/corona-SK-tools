@@ -113,14 +113,14 @@ class SIRModel: ObservableObject {
         // if value >=limit, natural probability of death is not reduces anymore
         let a = 0.5 // probability of hospitality
         let b = 0.1 // reported natural morbidity without healt care
-        let n = 1.0 // control efektivity of healt care
+        let n = 0.05 // control efektivity of healt care
         let p = pow(1.005, indicated * 0.1)
         let k = pow(1.005, icu * 1.4)
         let r = (p / (p + k) + n) / (1 + n)    // logistic function 0 if value << limit, 1 if value > limit
         return r * indicated * a * b
     }
     
-    func solve() -> (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], mortality: [Double], mortalityRate: [Double]) {
+    func solve() -> (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], death: [Double], mortalityRate: [Double]) {
         var sir = SIR(susspectible: susceptible, infectious: infectious, recovered: 0, beta: beta, gamma: gamma, lambda: 1.2)
         // state <-> [susceptible, infectious]
         var state = [sir.state()]
@@ -129,6 +129,8 @@ class SIRModel: ObservableObject {
         var hospitalized: [Double] = [0]
         var mortalityRate: [Double] = [0.0]
         var mortality: [Double] = [0.0]
+        var death: [Double] = [0.0]
+        var cases: [Double] = [0.0]
         
         _ = (0 ..< days[daysSelection]).map { (i)  in
             let _s = state[i]
@@ -202,18 +204,28 @@ class SIRModel: ObservableObject {
             max(v.0, v.1)
         }
         
+        hospitalized[1...].enumerated().forEach { (v) in
+            let c = cases[v.offset]
+            cases.append(c + v.element)
+        }
+        
         mortality = state.map { (v) -> Double in
             let r = logisticMorbidity(indicated: v[1] * 0.08, icu: icu)
             return r
         }
         
+        mortality[1...].enumerated().forEach { (v) in
+            let ld = death[v.offset]
+            death.append(ld + v.element)
+        }
+        
         mortalityRate = zip(mortality, identified).enumerated().map { (v) -> Double in
             v.element.0 * 100 / v.element.1
         }
-        return (susceptible: state.map {$0[0]}, infectious: state.map {$0[1]}, isolated: isolated, hospitalized: hospitalized, infectionrate: infectionrate, identified: identified, mortality: mortality, mortalityRate: mortalityRate)
+        return (susceptible: state.map {$0[0]}, infectious: state.map {$0[1]}, isolated: isolated, hospitalized: hospitalized, infectionrate: infectionrate, identified: identified, death: death, mortalityRate: mortalityRate)
     }
     
-    var result: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], mortality: [Double], mortalityRate: [Double]) {
+    var result: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], death: [Double], mortalityRate: [Double]) {
         let r = solve()
         return r
     }
