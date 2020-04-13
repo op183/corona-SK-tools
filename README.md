@@ -24,3 +24,4 @@ SIR model definuje
 
 
 Túto teóriu potvrdzuje aj článok ku ktorému som sa dnes dostal https://www.worldpop.org/events/COVID_NPI
+Model a jeho správanie a závery ktoré z neho vyvodzujem sú veľmi podobné ako https://exchange.iseesystems.com/public/isee/covid-19-simulator/index.html#page1
