@@ -338,7 +338,7 @@ let _sk_rd: [Double] = [
 769 - 31 - 0 * 76
 ]
 
-// sk data
+// sk data, based on new total recovered
 let sk_rd: [Double] = [
 1,
 3 - 0,
