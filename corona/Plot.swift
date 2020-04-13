@@ -25,7 +25,12 @@ struct Plot: View {
                     "2020-10-01T00:00:00+0000",
                     "2020-11-01T00:00:00+0000",
                     "2020-12-01T00:00:00+0000",
-                    "2021-01-01T00:00:00+0000"
+                    "2021-01-01T00:00:00+0000",
+                    "2021-02-01T00:00:00+0000",
+                    "2021-03-01T00:00:00+0000",
+                    "2021-04-01T00:00:00+0000",
+                    "2021-05-01T00:00:00+0000",
+
     ]
     
     fileprivate func month(proxy: GeometryProxy, isoDates: [String]) -> some View {
@@ -50,7 +55,7 @@ struct Plot: View {
                 }
             }.stroke(lineWidth: 5).foregroundColor(Color.green)
             ForEach(0 ..< xdaysInRange.count) { (i) in
-                Text("\((i + 4) % 12)")
+                Text("\((i + 3) % 12 + 1)")
                     .font(.system(size: 11, weight: .light, design: .monospaced))
                     .foregroundColor(Color.green)
                     .position(x: xdays[i], y:  -10)
@@ -377,6 +382,7 @@ let sk_rd: [Double] = [
 715 - 99,
 728 - 101,
 742 - 103,
-769 - 107
+769 - 107,
+
 ]
 
