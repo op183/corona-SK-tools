@@ -82,7 +82,7 @@ struct Plot: View {
                 path.addLine(to: .init(x: x, y: proxy.size.height))
             }.stroke(lineWidth: 0.5).foregroundColor(color)
             
-            Text(date(offset: day))
+            Text(date(offset: day) + "(\(day))")
                 .font(.system(size: 11, weight: .light, design: .monospaced))
                 .foregroundColor(Color.green)
                 .position(x: x, y:  proxy.size.height + 10)
@@ -270,11 +270,12 @@ struct PlotInfectionRate: View {
                         path.addLines(points)
                     }.stroke(lineWidth: 1).foregroundColor(Color.pink)
                     
+                    /*
                     // mortality
                     Path { (path) in
                         let enumeration = self.values.mortalityRate.enumerated()
                         let v = enumeration.compactMap { (e) -> (Int, Double)? in
-                            if (e.element == Double.infinity) || e.offset < 10 {
+                            if (e.element == Double.infinity) || e.offset < 14 {
                                 return nil
                             } else {
                                 return e
@@ -287,7 +288,7 @@ struct PlotInfectionRate: View {
                         path.move(to: .init(x: 0, y: proxy.size.height))
                         path.addLines(points)
                     }.stroke(lineWidth: 1).foregroundColor(Color.primary)
-                    
+                    */
                 }
             }
         }
@@ -296,7 +297,8 @@ struct PlotInfectionRate: View {
 
 
 // sk data
-let sk_rd: [Double] = [1,
+let _sk_rd: [Double] = [
+1,
 3,
 5,
 7,
@@ -331,4 +333,50 @@ let sk_rd: [Double] = [1,
 682 - 18,
 701 - 25,
 715 - 25,
-728 - 25]
+728 - 25,
+742 - 25,
+769 - 31 - 0 * 76
+]
+
+// sk data
+let sk_rd: [Double] = [
+1,
+3 - 0,
+5 - 1,
+7 - 1,
+8.5 - 1,
+10 - 1,
+21 - 3,
+32 - 4,
+44 - 6,
+61 - 8,
+72 - 10,
+97 - 13,
+105 - 15,
+123 - 17,
+137 - 19,
+178 - 25,
+185 - 26,
+204 - 38,
+216 - 30,
+226 - 31,
+269 - 37,
+292 - 41,
+314 - 44,
+336 - 47,
+363 - 51,
+400 - 56,
+426 - 59,
+450 - 63,
+471 - 66,
+485 - 57,
+534 - 74,
+581 - 81,
+682 - 95,
+701 - 98,
+715 - 99,
+728 - 101,
+742 - 103,
+769 - 107
+]
+

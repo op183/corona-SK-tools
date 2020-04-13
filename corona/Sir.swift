@@ -70,6 +70,11 @@ struct SIR: Rk4 {
     }
 }
 
+struct Parameters {
+    let day: Int
+    let lambda: Double
+    let kappa: Double
+}
 
 class SIRModel: ObservableObject {
     
@@ -81,7 +86,7 @@ class SIRModel: ObservableObject {
     }
     
     let scale = [5000000.0, 3000000, 1000000.0, 500000, 300000, 100000, 50000, 30000, 10000, 5000, 3000, 1000]
-    @Published var scaleSelection = 2
+    @Published var scaleSelection = 8
     
     let days = [500, 300, 200, 150, 100, 50] // number of steps from initial state
     @Published var daysSelection = 2
@@ -90,11 +95,19 @@ class SIRModel: ObservableObject {
     // initial state of model with
     let susceptible = 5500000.0
     let infectious = 220.0
-    @Published var lambda = 0.7 // social distance, has effect on whole population
-    @Published var kappa = 0.041 // infectious quarantine effectivity, has effect on infected population
-    @Published var activeSearchSaturation = 5000.0
+    
+    @Published var current = true
+    var parameters: [Parameters] = [Parameters(day: 10, lambda: 0.65, kappa: 0.04),
+                                    Parameters(day: 28, lambda: 0.67, kappa: 0.05),
+                                    Parameters(day: 31, lambda: 0.6, kappa: 0.045),
+                                    //Parameters(day: 40, lambda: 0.67, kappa: 0.045)
+    ]
+    
+    @Published var lambda = 0.6 // social distance, has effect on whole population
+    @Published var kappa = 0.045 // infectious quarantine effectivity, has effect on infected population
+    @Published var activeSearchSaturation = 450.0
     @Published var kappaSaturation = false
-    @Published var icu = 5000.0
+    @Published var icu = 1500.0
     @Published var icuSaturation = false
     
     let latency = 9 // odhad postavený na spodnej hranici intervalu prahu testovatelnosti + stredná doba imunizácie
@@ -133,15 +146,41 @@ class SIRModel: ObservableObject {
         var mortality: [Double] = [0.0]
         var death: [Double] = [0.0]
         var cases: [Double] = [0.0]
-        
+                
+        var iterator = parameters.makeIterator()
+        var p = iterator.next()
+        var index = 0
+        var _lambda = 1.0
+        var _kappa = 0.0
+        var Kappa = 0.0
+
         _ = (0 ..< days[daysSelection]).map { (i)  in
+            
+            if let p = p, i < p.day {
+                print(p.day, index)
+                _lambda = p.lambda
+                _kappa = p.kappa
+            } else {
+                
+                if let _p = iterator.next() {
+                    index += 1
+                    p = _p
+                    _lambda = _p.lambda
+                    _kappa = _p.kappa
+                } else {
+                    _lambda = lambda
+                    _kappa = kappa
+                }
+            }
+            
             let _s = state[i]
             var s_ = sir.next(state: _s)
             // update lambda
             // modeluje nábeh opatrení na obmedzenie social distance (latencia cca 14 dní)
-            if sir.lambda > lambda {
-                sir.lambda -= (sir.lambda - lambda) * 0.2
-            }
+            //if sir.lambda > _lambda {
+                sir.lambda -= (sir.lambda - _lambda) * 0.2
+            Kappa -= (Kappa - _kappa) * 0.2
+            //}
             
             // a small proportion of infectious is identified and isolated by active screening and "massive" testing
             
@@ -184,7 +223,7 @@ class SIRModel: ObservableObject {
             
             
             // TODO  hard limit should be replaced with soft limiting funcion
-            let det = min(s_[1] * kappa, kappaSaturation ? activeSearchSaturation : susceptible)
+            let det = min(s_[1] * Kappa, kappaSaturation ? activeSearchSaturation : susceptible)
             
             // 25% need special care, rest stay in home quarantine
             // + 10% of infectious with 3 days latency

@@ -139,6 +139,7 @@ struct ContentView: View {
                 HStack {
                     Text("Infection rate 0.75 ... 1.25")
                     Text("Morbidity 0 ... 10%")
+                    Text("Interverntion FIXED on day \(model.parameters.last?.day ?? 0)").foregroundColor(Color.orange)
                 }.padding(.bottom)
                 
             }
@@ -163,43 +164,23 @@ struct ContentView: View {
                     Text("IZP")
                 })
                 Button(action: {
-                    self.model.kappa = 0.0425
-                    self.model.lambda = 0.7
-                    self.model.activeSearchSaturation = 450.0
-                    self.kappaColor = Color.primary
+                    if let p = self.model.parameters.last {
+                        self.model.kappa = p.kappa
+                        self.model.lambda = p.lambda
+                        self.model.activeSearchSaturation = 450.0
+                        self.model.kappaSaturation = true
+                        self.kappaColor = Color.primary
+                    } else {
+                        self.model.kappa = 0.0425
+                        self.model.lambda = 0.7
+                        self.model.activeSearchSaturation = 450.0
+                        self.kappaColor = Color.primary
+                    }
 
                 }, label: {
                     Text("Current")
                 })
-                Button(action: {
-                    self.model.kappa = 0.1
-                    self.model.lambda = 0.9
-                    self.model.activeSearchSaturation = 1000.0
-                    self.kappaColor = Color.primary
-
-                }, label: {
-                    Text("Economic")
-                })
-                Button(action: {
-                    self.model.kappa = 0.1776
-                    self.model.lambda = 1.0
-                    self.model.activeSearchSaturation = 5000.0
-                    self.model.kappaSaturation = true
-                    self.kappaColor = Color.green
-
-                }, label: {
-                    Text("Ideal").foregroundColor(Color.green)
-                })
-                Button(action: {
-                    self.model.kappa = 0.1775
-                    self.model.lambda = 1.0
-                    self.model.activeSearchSaturation = 5000.0
-                    self.model.kappaSaturation = true
-                    self.kappaColor = Color.orange
-
-                }, label: {
-                    Text("Disaster").foregroundColor(Color.orange)
-                })
+                
                 
             }.frame(width: 100)
         }
