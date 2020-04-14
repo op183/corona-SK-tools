@@ -154,6 +154,7 @@ struct ContentView: View {
                 }, label: {
                     Text("Zero")
                 })
+                /*
                 Button(action: {
                     self.model.kappa = 0.0
                     self.model.lambda = 0.55
@@ -162,7 +163,7 @@ struct ContentView: View {
 
                 }, label: {
                     Text("IZP")
-                })
+                })*/
                 Button(action: {
                     if let p = self.model.parameters.last {
                         self.model.kappa = p.kappa
