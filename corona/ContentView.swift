@@ -138,7 +138,7 @@ struct ContentView: View {
                     .border(Color.secondary.opacity(0.1)).padding()
                 HStack {
                     Text("Infection rate 0.75 ... 1.25")
-                    Text("Morbidity 0 ... 10%")
+                    //Text("Morbidity 0 ... 10%") removed from presentation due inacuracy
                     Text("Interverntion FIXED on day \(model.parameters.last?.day ?? 0)").foregroundColor(Color.orange)
                 }.padding(.bottom)
                 
