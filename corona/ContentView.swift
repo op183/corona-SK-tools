@@ -148,38 +148,40 @@ struct ContentView: View {
                 Button(action: {
                     self.model.kappa = 0.0
                     self.model.lambda = 1.0
-                    self.model.kappaSaturation = false
+                    //self.model.kappaSaturation = false
                     self.kappaColor = Color.primary
                     
                 }, label: {
                     Text("Zero")
                 })
-                /*
+                
                 Button(action: {
                     self.model.kappa = 0.0
                     self.model.lambda = 0.55
-                    self.model.kappaSaturation = false
+                    //self.model.kappaSaturation = false
                     self.kappaColor = Color.primary
+                    self.model.current = false
 
                 }, label: {
                     Text("IZP")
-                })*/
+                })
                 Button(action: {
                     if let p = self.model.parameters.last {
                         self.model.kappa = p.kappa
                         self.model.lambda = p.lambda
-                        self.model.activeSearchSaturation = 450.0
-                        self.model.kappaSaturation = true
+                        //self.model.activeSearchSaturation = 450.0
+                        //self.model.kappaSaturation = false
                         self.kappaColor = Color.primary
                     } else {
                         self.model.kappa = 0.0425
                         self.model.lambda = 0.7
-                        self.model.activeSearchSaturation = 450.0
+                        //self.model.activeSearchSaturation = 450.0
                         self.kappaColor = Color.primary
                     }
+                    self.model.current = true
 
                 }, label: {
-                    Text("Current")
+                    Text("Current").foregroundColor(self.model.current ? .green: nil)
                 })
                 
                 

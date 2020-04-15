@@ -275,6 +275,20 @@ struct PlotInfectionRate: View {
                         path.addLines(points)
                     }.stroke(lineWidth: 1).foregroundColor(Color.pink)
                     
+                    // im
+                    Path { (path) in
+                        path.move(to: .init(x: 0, y: proxy.size.height))
+                        let im = zip(self.values.identified, self.values.identified[1...]).map { v -> Double in
+                            v.1 / v.0
+                        }
+                        let enumeration = im[14...].enumerated()
+                        let points = enumeration.map({ (v) -> CGPoint in
+                            CGPoint(x: Double(v.offset + 14) * Double(proxy.size.width) / Double(self.values.infectionrate.count - 1), y: Double(proxy.size.height) - (v.element - 0.75) * Double(proxy.size.height)/self.max)
+                        })
+                            
+                        path.addLines(points)
+                    }.stroke(lineWidth: 1).foregroundColor(Color.yellow)
+                    
                     /*
                     // mortality
                     Path { (path) in
@@ -383,6 +397,7 @@ let sk_rd: [Double] = [
 728 - 101,
 742 - 103,
 769 - 107,
-
+835 - 107,
+863 - 113,
 ]
 

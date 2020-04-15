@@ -73,6 +73,7 @@ struct SIR: Rk4 {
 struct Parameters {
     let day: Int
     let lambda: Double
+    let lambdaISP: Double
     let kappa: Double
 }
 
@@ -97,10 +98,10 @@ class SIRModel: ObservableObject {
     let infectious = 220.0
     
     @Published var current = true
-    var parameters: [Parameters] = [Parameters(day: 10, lambda: 0.65, kappa: 0.04),
-                                    Parameters(day: 28, lambda: 0.67, kappa: 0.05),
-                                    Parameters(day: 31, lambda: 0.6, kappa: 0.045),
-                                    //Parameters(day: 40, lambda: 0.67, kappa: 0.045)
+    var parameters: [Parameters] = [Parameters(day: 10, lambda: 0.67, lambdaISP: 0.55, kappa: 0.055),
+                                    Parameters(day: 40, lambda: 0.67, lambdaISP: 0.55, kappa: 0.045),
+                                    //Parameters(day: 115, lambda: 0.60, lambdaISP: 0.55, kappa: 0.045),
+                                    //Parameters(day: 73, lambda: 0.5, kappa: 0.045)
     ]
     
     @Published var lambda = 0.6 // social distance, has effect on whole population
@@ -158,15 +159,15 @@ class SIRModel: ObservableObject {
             
             if let p = p, i < p.day {
                 print(p.day, index)
-                _lambda = p.lambda
-                _kappa = p.kappa
+                _lambda = current ? p.lambda : p.lambdaISP
+                _kappa = current ? p.kappa : 0
             } else {
                 
                 if let _p = iterator.next() {
                     index += 1
                     p = _p
-                    _lambda = _p.lambda
-                    _kappa = _p.kappa
+                    _lambda = current ? _p.lambda : _p.lambdaISP
+                    _kappa = current ? _p.kappa : 0
                 } else {
                     _lambda = lambda
                     _kappa = kappa
@@ -263,6 +264,7 @@ class SIRModel: ObservableObject {
         mortalityRate = zip(mortality, identified).enumerated().map { (v) -> Double in
             v.element.0 * 100 / v.element.1
         }
+        
         return (susceptible: state.map {$0[0]}, infectious: state.map {$0[1]}, isolated: isolated, hospitalized: hospitalized, infectionrate: infectionrate, identified: identified, death: death, mortalityRate: mortalityRate)
     }
     
