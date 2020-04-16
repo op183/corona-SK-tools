@@ -98,11 +98,26 @@ class SIRModel: ObservableObject {
     let infectious = 220.0
     
     @Published var current = true
-    var parameters: [Parameters] = [Parameters(day: 10, lambda: 0.67, lambdaISP: 0.55, kappa: 0.055),
+    var parameters: [Parameters] = [Parameters(day: 10, lambda: 0.675, lambdaISP: 0.55, kappa: 0.055),
                                     Parameters(day: 40, lambda: 0.67, lambdaISP: 0.55, kappa: 0.045),
-                                    //Parameters(day: 115, lambda: 0.60, lambdaISP: 0.55, kappa: 0.045),
+                                    //Parameters(day: 94, lambda: 0.67, lambdaISP: 0.55, kappa: 0.045),
+
+                                    //Parameters(day: 120, lambda: 0.5, lambdaISP: 0.55, kappa: 0.045),
+
+                                    //Parameters(day: 140, lambda: 0.8, lambdaISP: 0.55, kappa: 0.045),
+
                                     //Parameters(day: 73, lambda: 0.5, kappa: 0.045)
     ]
+    
+    var fixed: Int? {
+        let i = parameters.count - 1
+        return i < 0 ? nil : parameters[i].day
+    }
+    
+    var predicted: Int? {
+        let i = parameters.count - 2
+        return i < 0 ? nil : parameters[i].day
+    }
     
     @Published var lambda = 0.6 // social distance, has effect on whole population
     @Published var kappa = 0.045 // infectious quarantine effectivity, has effect on infected population

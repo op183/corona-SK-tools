@@ -137,9 +137,13 @@ struct ContentView: View {
                 PlotInfectionRate(values: model.result, max: 0.5)
                     .border(Color.secondary.opacity(0.1)).padding()
                 HStack {
+                    Spacer()
                     Text("Infection rate 0.75 ... 1.25")
                     //Text("Morbidity 0 ... 10%")  removed from presentation due inacuracy
-                    Text("Interverntion FIXED on day \(model.parameters.last?.day ?? 0)").foregroundColor(Color.orange)
+                    Spacer()
+                    Text("Interverntion FIXED on day \(model.fixed ?? 0),").foregroundColor(Color.orange)
+                    Text("parameters predicted on day \(model.predicted ?? 0)").foregroundColor(Color.orange)
+                    Spacer()
                 }.padding(.bottom)
                 
             }
