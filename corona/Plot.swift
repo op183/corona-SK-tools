@@ -358,6 +358,7 @@ let _sk_rd: [Double] = [
 ]
 
 // sk data, based on new total recovered
+// total cases reported - released
 let sk_rd: [Double] = [
 1,
 3 - 0,
@@ -397,8 +398,9 @@ let sk_rd: [Double] = [
 728 - 101,
 742 - 103,
 769 - 107,
-835 - 107,
-863 - 113,
+835 - 109,
+863 - 115,
 977 - 155,
+1049 - 175,
 ]
 

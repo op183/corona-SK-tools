@@ -12,7 +12,7 @@ struct ContentView: View {
     @ObservedObject var model = SIRModel()
     @State var kappaColor = Color.primary
     @State var day = 0
-    
+    @State var rateVisible = true
     
     var body: some View {
         HStack {
@@ -34,22 +34,21 @@ struct ContentView: View {
                             .frame(width: 100)
                             .foregroundColor(kappaColor)
                         
-                        Slider(value: $model.activeSearchSaturation, in: (0.0 ... 5000.0), minimumValueLabel: Text("0").onTapGesture {
+                        Slider(value: $model.activeSearchSaturation, in: (0.0 ... 10000.0), minimumValueLabel: Text("0").onTapGesture {
                             self.model.activeSearchSaturation -= 10
                             if self.model.activeSearchSaturation < 0 {
                                 self.model.activeSearchSaturation = 0
                             }
-                            }, maximumValueLabel: Text("5000.0").onTapGesture {
+                            }, maximumValueLabel: Text("10000.0").onTapGesture {
                                 self.model.activeSearchSaturation += 10
                         }) {
                             Toggle("PCR Limit", isOn: $model.kappaSaturation)
                                 .frame(width: 150)
                         }
                         HStack {
-                            Text(model.kappaSaturation ? String(format: "%.1f", model.activeSearchSaturation) : "unlimited").frame(width: 100)
+                            Text(model.kappaSaturation ? String(format: "%.1f (required testing capacity)", model.activeSearchSaturation) : "unlimited")
                             Spacer()
-                            Text(String(format: "%.1f (required testing capacity)", 0.2 / model.kappa * model.activeSearchSaturation))
-                                .opacity(model.kappaSaturation ? 1: 0.3)//.frame(width: 100)
+                            
                         }
                     }.frame(height: 100)
                     VStack {
@@ -118,33 +117,40 @@ struct ContentView: View {
                 }
                 .padding(.horizontal)
                 .padding(.top)
-                
+                //Group {
                 Plot(values: model.result, size: model.size, max: model.scale[model.scaleSelection], day: day)
                     .border(Color.secondary.opacity(0.1)).padding()
-
-                Picker(selection: $model.scaleSelection, label: Text("Population x 10000").frame(width: 200)) {
-                    ForEach(0 ..< model.scale.count) { (i) in
-                        Text(String(format: "%.1f", self.model.scale[i]/10000.0)).tag(i)
-                    }
-                }.pickerStyle(SegmentedPickerStyle())
                 
-                Picker(selection: $model.daysSelection, label: Text("Days from 06/03/2020").frame(width: 200)) {
-                    ForEach(0 ..< model.days.count) { (i) in
-                        Text("\(self.model.days[i])").tag(i)
-                    }
-                }.pickerStyle(SegmentedPickerStyle())
+                Group {
+                    Picker(selection: $model.scaleSelection, label: Text("Population x 10000").frame(width: 200)) {
+                        ForEach(0 ..< model.scale.count) { (i) in
+                            Text(String(format: "%.1f", self.model.scale[i]/10000.0)).tag(i)
+                        }
+                    }.pickerStyle(SegmentedPickerStyle())
+                    
+                    Picker(selection: $model.daysSelection, label: Text("Days from 06/03/2020").frame(width: 200)) {
+                        ForEach(0 ..< model.days.count) { (i) in
+                            Text("\(self.model.days[i])").tag(i)
+                        }
+                    }.pickerStyle(SegmentedPickerStyle())
+                }
                 
-                PlotInfectionRate(values: model.result, max: 0.5)
-                    .border(Color.secondary.opacity(0.1)).padding()
-                HStack {
-                    Spacer()
-                    Text("Infection rate 0.75 ... 1.25")
-                    //Text("Morbidity 0 ... 10%")  removed from presentation due inacuracy
-                    Spacer()
-                    Text("Interverntion FIXED on day \(model.fixed ?? 0),").foregroundColor(Color.orange)
-                    Text("parameters predicted on day \(model.predicted ?? 0)").foregroundColor(Color.orange)
-                    Spacer()
-                }.padding(.bottom)
+                if rateVisible {
+                Group {
+                    
+                    PlotInfectionRate(values: model.result, max: 0.5)
+                        .border(Color.secondary.opacity(0.1)).padding()
+                    HStack {
+                        Spacer()
+                        Text("Infection rate 0.75 ... 1.25")
+                        //Text("Morbidity 0 ... 10%")  removed from presentation due inacuracy
+                        Spacer()
+                        Text("Interverntion FIXED on day \(model.fixed ?? 0),").foregroundColor(Color.orange)
+                        Text("parameters predicted on day \(model.predicted ?? 0)").foregroundColor(Color.orange)
+                        Spacer()
+                    }.padding(.bottom)
+                }
+                }
                 
             }
             List {

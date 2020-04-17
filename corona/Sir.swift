@@ -8,8 +8,6 @@
 
 import Foundation
 
-
-
 protocol Rk4 {
     typealias State = [Double]
     func dsdt(_ state: State) -> State
@@ -100,13 +98,8 @@ class SIRModel: ObservableObject {
     @Published var current = true
     var parameters: [Parameters] = [Parameters(day: 10, lambda: 0.675, lambdaISP: 0.55, kappa: 0.055),
                                     Parameters(day: 40, lambda: 0.67, lambdaISP: 0.55, kappa: 0.045),
-                                    //Parameters(day: 94, lambda: 0.67, lambdaISP: 0.55, kappa: 0.045),
 
-                                    //Parameters(day: 120, lambda: 0.5, lambdaISP: 0.55, kappa: 0.045),
-
-                                    //Parameters(day: 140, lambda: 0.8, lambdaISP: 0.55, kappa: 0.045),
-
-                                    //Parameters(day: 73, lambda: 0.5, kappa: 0.045)
+                                    Parameters(day: 154, lambda: 0.72, lambdaISP: 0.55, kappa: 0.045),
     ]
     
     var fixed: Int? {
@@ -119,9 +112,9 @@ class SIRModel: ObservableObject {
         return i < 0 ? nil : parameters[i].day
     }
     
-    @Published var lambda = 0.6 // social distance, has effect on whole population
+    @Published var lambda = 0.67 // social distance, has effect on whole population
     @Published var kappa = 0.045 // infectious quarantine effectivity, has effect on infected population
-    @Published var activeSearchSaturation = 450.0
+    @Published var activeSearchSaturation = 2000.0
     @Published var kappaSaturation = false
     @Published var icu = 1500.0
     @Published var icuSaturation = false
@@ -144,7 +137,7 @@ class SIRModel: ObservableObject {
         // if value >=limit, natural probability of death is not reduces anymore
         let a = 0.5 // probability of hospitality
         let b = 0.1 // reported natural morbidity without healt care
-        let n = 0.05 // control efektivity of healt care
+        let n = 0.05 // controls efektivity of healt care
         let p = pow(1.005, indicated * 0.1)
         let k = pow(1.005, icu * 1.4)
         let r = (p / (p + k) + n) / (1 + n)    // logistic function 0 if value << limit, 1 if value > limit
