@@ -96,10 +96,12 @@ class SIRModel: ObservableObject {
     let infectious = 220.0
     
     @Published var current = true
-    var parameters: [Parameters] = [Parameters(day: 10, lambda: 0.675, lambdaISP: 0.55, kappa: 0.055),
-                                    Parameters(day: 40, lambda: 0.67, lambdaISP: 0.55, kappa: 0.045),
+    var parameters: [Parameters] = [Parameters(day: 10, lambda: 0.675, lambdaISP: 0.57, kappa: 0.055),
+                                    Parameters(day: 21, lambda: 0.670, lambdaISP: 0.54, kappa: 0.045),
 
-                                    Parameters(day: 154, lambda: 0.72, lambdaISP: 0.55, kappa: 0.045),
+                                    //Parameters(day: 40, lambda: 0.675, lambdaISP: 0.55, kappa: 0.045),
+
+                                    //Parameters(day: 154, lambda: 0.72, lambdaISP: 0.55, kappa: 0.045),
     ]
     
     var fixed: Int? {

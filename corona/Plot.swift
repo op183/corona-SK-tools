@@ -55,7 +55,7 @@ struct Plot: View {
                 }
             }.stroke(lineWidth: 5).foregroundColor(Color.green)
             ForEach(0 ..< xdaysInRange.count) { (i) in
-                Text("\((i + 3) % 12 + 1)")
+                Text("1/\((i + 3) % 12 + 1)")
                     .font(.system(size: 11, weight: .light, design: .monospaced))
                     .foregroundColor(Color.green)
                     .position(x: xdays[i], y:  -10)
@@ -402,5 +402,6 @@ let sk_rd: [Double] = [
 863 - 115,
 977 - 155,
 1049 - 175,
+1089 - 184,
 ]
 

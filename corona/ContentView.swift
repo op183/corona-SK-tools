@@ -167,7 +167,11 @@ struct ContentView: View {
                 
                 Button(action: {
                     self.model.kappa = 0.0
-                    self.model.lambda = 0.55
+                    if let p = self.model.parameters.last {
+                        self.model.lambda = p.lambdaISP
+                    } else {
+                        self.model.lambda = 0.55
+                    }
                     //self.model.kappaSaturation = false
                     self.kappaColor = Color.primary
                     self.model.current = false
