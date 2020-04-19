@@ -27,3 +27,5 @@ Túto teóriu potvrdzuje aj článok ku ktorému som sa dnes dostal https://www.
 Model a jeho správanie a závery ktoré z neho vyvodzujem sú veľmi podobné ako https://exchange.iseesystems.com/public/isee/covid-19-simulator/index.html#page1
 
 ale najmä https://www.epicx-lab.com/uploads/9/6/9/4/9694133/inserm-covid-19_report_lockdown_idf-20200412.pdf kde parameter pa reprezentuje rovnaký typ intervencie ako kappa v mojom "toy modeli".
+
+https://github.com/op183/corona-SK-tools/blob/master/corona/Screenshot%202020-04-19%20at%2012.01.16.png
