@@ -97,7 +97,7 @@ class SIRModel: ObservableObject {
     
     @Published var current = true
     var parameters: [Parameters] = [Parameters(day: 10, lambda: 0.675, lambdaISP: 0.57, kappa: 0.055),
-                                    Parameters(day: 21, lambda: 0.670, lambdaISP: 0.54, kappa: 0.045),
+                                    Parameters(day: 22, lambda: 0.670, lambdaISP: 0.54, kappa: 0.045),
 
                                     //Parameters(day: 40, lambda: 0.675, lambdaISP: 0.55, kappa: 0.045),
 
@@ -284,4 +284,5 @@ class SIRModel: ObservableObject {
     }
 }
 
-// some mirror modification due to UI 
+// some mirror modification due to UI
+
