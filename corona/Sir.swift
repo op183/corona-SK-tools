@@ -97,9 +97,9 @@ class SIRModel: ObservableObject {
     
     @Published var current = true
     var parameters: [Parameters] = [Parameters(day: 10, lambda: 0.675, lambdaISP: 0.57, kappa: 0.055),
-                                    Parameters(day: 22, lambda: 0.670, lambdaISP: 0.54, kappa: 0.045),
+                                    Parameters(day: 26, lambda: 0.670, lambdaISP: 0.54, kappa: 0.045),
 
-                                    //Parameters(day: 40, lambda: 0.675, lambdaISP: 0.55, kappa: 0.045),
+                                    Parameters(day: 30, lambda: 0.675, lambdaISP: 0.55, kappa: 0.055),
 
                                     //Parameters(day: 154, lambda: 0.72, lambdaISP: 0.55, kappa: 0.045),
     ]
@@ -146,14 +146,13 @@ class SIRModel: ObservableObject {
         return r * indicated * a * b
     }
     
-    func solve() -> (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], death: [Double], mortalityRate: [Double]) {
+    func solve() -> (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], death: [Double], sigma: [Double]) {
         var sir = SIR(susspectible: susceptible, infectious: infectious, recovered: 0, beta: beta, gamma: gamma, lambda: 1.2)
         // state <-> [susceptible, infectious]
         var state = [sir.state()]
         var infectionrate: [Double] = [0]
         var isolated: [Double] = [0]
         var hospitalized: [Double] = [0]
-        var mortalityRate: [Double] = [0.0]
         var mortality: [Double] = [0.0]
         var death: [Double] = [0.0]
         var cases: [Double] = [0.0]
@@ -168,7 +167,7 @@ class SIRModel: ObservableObject {
         _ = (0 ..< days[daysSelection]).map { (i)  in
             
             if let p = p, i < p.day {
-                print(p.day, index)
+                //print(p.day, index)
                 _lambda = current ? p.lambda : p.lambdaISP
                 _kappa = current ? p.kappa : 0
             } else {
@@ -271,15 +270,23 @@ class SIRModel: ObservableObject {
             death.append(ld + v.element)
         }
         
-        mortalityRate = zip(mortality, identified).enumerated().map { (v) -> Double in
-            v.element.0 * 100 / v.element.1
-        }
         
-        return (susceptible: state.map {$0[0]}, infectious: state.map {$0[1]}, isolated: isolated, hospitalized: hospitalized, infectionrate: infectionrate, identified: identified, death: death, mortalityRate: mortalityRate)
+        return (susceptible: state.map {$0[0]}, infectious: state.map {$0[1]}, isolated: isolated, hospitalized: hospitalized, infectionrate: infectionrate, identified: identified, death: death, sigma: [])
     }
     
-    var result: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], death: [Double], mortalityRate: [Double]) {
-        let r = solve()
+    var result: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], death: [Double], sigma: [Double]) {
+        var r = solve()
+        var e2: [Double] = [0.0]
+        for i in 1 ..< sk_rd.count {
+            let _e2 = pow((r.identified[i] - sk_rd[i]), 2.0)
+            e2.append(_e2)
+        }
+        var s: [Double] = [0.0]
+        for i in 1 ..< e2.count {
+            let _s = sqrt(e2[...i].reduce(0.0, +) / Double(i))
+            s.append(_s)
+        }
+        r.sigma = s
         return r
     }
 }

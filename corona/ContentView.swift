@@ -142,11 +142,12 @@ struct ContentView: View {
                         .border(Color.secondary.opacity(0.1)).padding()
                     HStack {
                         Spacer()
-                        Text("Infection rate 0.75 ... 1.25")
+                        Text("σ 0 ... 50").foregroundColor(.secondary)
+                        Text("Active rate 0.75 ... 1.25").foregroundColor(.yellow)
                         //Text("Morbidity 0 ... 10%")  removed from presentation due inacuracy
                         Spacer()
-                        Text("Interverntion FIXED on day \(model.fixed ?? 0),").foregroundColor(Color.orange)
-                        Text("parameters predicted on day \(model.predicted ?? 0)").foregroundColor(Color.orange)
+                        Text("Interverntion FIXED on day \(model.fixed ?? 0),")
+                        Text("parameters predicted on day \(model.predicted ?? 0)")
                         Spacer()
                     }.padding(.bottom)
                 }
@@ -197,6 +198,7 @@ struct ContentView: View {
                 }, label: {
                     Text("Current").foregroundColor(self.model.current ? .green: nil)
                 })
+                
                 
                 
             }.frame(width: 100)

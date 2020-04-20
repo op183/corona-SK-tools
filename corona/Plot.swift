@@ -12,7 +12,7 @@
 import SwiftUI
 
 struct Plot: View {
-    let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], death: [Double], mortalityRate: [Double])
+    let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], death: [Double], sigma: [Double])
     let size: Int
     let max: Double
     let day: Int
@@ -148,7 +148,7 @@ struct Plot: View {
                     }.stroke(lineWidth: 1).foregroundColor(Color.blue)
                     
                     // hospitalized (not realy! it is infectious not early isolated)
-                    
+                    /*
                     Path { (path) in
                         path.move(to: .init(x: 0, y: proxy.size.height))
                         path.addLines(
@@ -157,6 +157,7 @@ struct Plot: View {
                             })
                         )
                     }.stroke(lineWidth: 1).foregroundColor(Color.orange)
+ */
                     
                     // identified
                     Path { (path) in
@@ -210,7 +211,7 @@ struct Plot: View {
 
 
 struct PlotInfectionRate: View {
-    let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], death: [Double], mortalityRate: [Double])
+    let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], death: [Double], sigma: [Double])
     let max: Double
     
     func daysFrom(isoDate: String, date: Date) -> Int {
@@ -287,27 +288,22 @@ struct PlotInfectionRate: View {
                         })
                             
                         path.addLines(points)
-                    }.stroke(lineWidth: 1).foregroundColor(Color.yellow)
+                    }.stroke(Color.yellow, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
                     
-                    /*
-                    // mortality
+                    
+                    // statistic
                     Path { (path) in
-                        let enumeration = self.values.mortalityRate.enumerated()
-                        let v = enumeration.compactMap { (e) -> (Int, Double)? in
-                            if (e.element == Double.infinity) || e.offset < 14 {
-                                return nil
-                            } else {
-                                return e
-                            }
-                        }
-                        let points = v.map({ (v) -> CGPoint in
-                            CGPoint(x: Double(v.0) * Double(proxy.size.width) / Double(self.values.death.count - 1), y: Double(proxy.size.height) - (v.1) * Double(proxy.size.height) / 10)
+                        let enumeration = self.values.sigma.enumerated()
+
+                        let points = enumeration.map({ (v) -> CGPoint in
+                            CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.values.identified.count - 1), y: Double(proxy.size.height) - (v.element / 5.0) * Double(proxy.size.height) / 10)
                         })
                         
                         path.move(to: .init(x: 0, y: proxy.size.height))
                         path.addLines(points)
-                    }.stroke(lineWidth: 1).foregroundColor(Color.primary)
-                    */
+                    }.stroke(lineWidth: 1).foregroundColor(Color.secondary)
+ 
+                    
                 }
             }
         }
@@ -404,5 +400,6 @@ let sk_rd: [Double] = [
 1049 - 175,
 1089 - 184,
 1161 - 224,
+1173 - 241,
 ]
 
