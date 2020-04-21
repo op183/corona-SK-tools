@@ -213,6 +213,7 @@ struct Plot: View {
 struct PlotInfectionRate: View {
     let values: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], death: [Double], sigma: [Double])
     let max: Double
+    let day: Int
     
     func daysFrom(isoDate: String, date: Date) -> Int {
         let isoDate = "2020-03-06T00:00:00+0000"
@@ -249,7 +250,7 @@ struct PlotInfectionRate: View {
                     }.stroke(lineWidth: 0.5).foregroundColor(Color.secondary)
                     
                     // today marker
-                    self.markday(proxy: proxy, day: self.daysFrom(isoDate: "2020-03-06T00:00:00+0000", date: Date()), color: .green)
+                    self.markday(proxy: proxy, day: self.day /*self.daysFrom(isoDate: "2020-03-06T00:00:00+0000", date: Date())*/, color: .green)
                     
                     // y grid
                     Path { (path) in

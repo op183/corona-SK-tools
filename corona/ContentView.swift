@@ -138,7 +138,7 @@ struct ContentView: View {
                 if rateVisible {
                 Group {
                     
-                    PlotInfectionRate(values: model.result, max: 0.5)
+                    PlotInfectionRate(values: model.result, max: 0.5, day: day)
                         .border(Color.secondary.opacity(0.1)).padding()
                     HStack {
                         Spacer()
