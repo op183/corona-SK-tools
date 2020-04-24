@@ -81,15 +81,44 @@ struct Plot: View {
     
     fileprivate func markday(proxy: GeometryProxy, day: Int, color: Color) -> some View {
         let x = proxy.size.width / CGFloat(self.size - 1) * CGFloat(day)
+        var median7 = ""
+        var rm7 = ""
+        if day - 8 > 0 && day < size {
+            let last7days = Array(values.identified[day - 8 ..< day])
+            let diff = zip(last7days, last7days.dropFirst()).map { (v) -> Int in
+                Int(round(v.1 - v.0))
+                }
+            let diffsorted = diff.sorted()
+            //print()
+            //print(last7days)
+            //print(diff)
+            median7 = String(format: "%d", diffsorted[3])
+            if day < sk_rd.count {
+                let last7days = Array(sk_rd[day - 8 ..< day])
+                let diff = zip(last7days, last7days.dropFirst()).map { (v) -> Int in
+                    Int(round(v.1 - v.0))
+                    }
+                let diffsorted = diff.sorted()
+                //print()
+                //print(last7days)
+                //print(diff)
+                rm7 = String(format: "%d", diffsorted[3])
+                //print(rm7)
+            }
+        }
         return ZStack {
             Path { (path) in
                 path.move(to: .init(x: x, y: 0))
                 path.addLine(to: .init(x: x, y: proxy.size.height))
             }.stroke(lineWidth: 0.5).foregroundColor(color)
             
-            Text(date(offset: day) + "(\(day))")
+            HStack {
+                Text(date(offset: day) + "(\(day))").foregroundColor(Color.green)
+                Text(median7).foregroundColor(.yellow)
+                Text(rm7).foregroundColor(.primary)
+            }
                 .font(.system(size: 11, weight: .light, design: .monospaced))
-                .foregroundColor(Color.green)
+                //.foregroundColor(Color.green)
                 .position(x: x, y:  proxy.size.height + 10)
         }
     }
@@ -147,7 +176,7 @@ struct Plot: View {
                         )
                     }.stroke(lineWidth: 1).foregroundColor(Color.blue)
                     
-                    // hospitalized (not realy! it is infectious not early isolated)
+                    // hospitalized (not really! (infectious not early isolated)
                     /*
                     Path { (path) in
                         path.move(to: .init(x: 0, y: proxy.size.height))
@@ -264,14 +293,14 @@ struct PlotInfectionRate: View {
                     Path { (path) in
                         path.move(to: .init(x: 0, y: proxy.size.height / 2))
                         path.addLine(to: .init(x: proxy.size.width, y: proxy.size.height / 2))
-                    }.stroke(Color.yellow, style: StrokeStyle.init(lineWidth: 0.5, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
+                    }.stroke(Color.yellow, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
                     
                     // infectionrate
                     Path { (path) in
                         path.move(to: .init(x: 0, y: proxy.size.height))
                         let enumeration = self.values.infectionrate[1...].enumerated()
                         let points = enumeration.map({ (v) -> CGPoint in
-                            CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.values.infectionrate.count - 1), y: Double(proxy.size.height) - (v.element - 0.75) * Double(proxy.size.height)/self.max)
+                            CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.values.infectionrate.count - 1), y: Double(proxy.size.height) - (v.element - 0.875) * Double(proxy.size.height)/self.max)
                         })
                             
                         path.addLines(points)
@@ -285,7 +314,7 @@ struct PlotInfectionRate: View {
                         }
                         let enumeration = im[14...].enumerated()
                         let points = enumeration.map({ (v) -> CGPoint in
-                            CGPoint(x: Double(v.offset + 14) * Double(proxy.size.width) / Double(self.values.infectionrate.count - 1), y: Double(proxy.size.height) - (v.element - 0.75) * Double(proxy.size.height)/self.max)
+                            CGPoint(x: Double(v.offset + 14) * Double(proxy.size.width) / Double(self.values.infectionrate.count - 1), y: Double(proxy.size.height) - (v.element - 0.875) * Double(proxy.size.height)/self.max)
                         })
                             
                         path.addLines(points)
@@ -402,5 +431,11 @@ let sk_rd: [Double] = [
 1089 - 184,
 1161 - 224,
 1173 - 241,
+1199 - 272,
+1244 - 296,
+1325 - 303,
+1360 - 372,
 ]
 
+// TODO: check daily data
+let data_source = "https://mapa.covid.chat/map_data/daily" // daily data external source

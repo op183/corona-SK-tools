@@ -16,6 +16,7 @@
 		E6C439ED243639BA0085C068 /* coronaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C439EC243639BA0085C068 /* coronaUITests.swift */; };
 		E6C439FB24363A000085C068 /* Plot.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C439FA24363A000085C068 /* Plot.swift */; };
 		E6CFDC1424364AC400A50CFC /* Sir.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6CFDC1324364AC400A50CFC /* Sir.swift */; };
+		E6E12E05244F7967001D8809 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E12E04244F7967001D8809 /* Utility.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 		E6C439EE243639BA0085C068 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E6C439FA24363A000085C068 /* Plot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plot.swift; sourceTree = "<group>"; };
 		E6CFDC1324364AC400A50CFC /* Sir.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sir.swift; sourceTree = "<group>"; };
+		E6E12E04244F7967001D8809 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +113,7 @@
 				E6C439D1243639B90085C068 /* Preview Content */,
 				E6C439FA24363A000085C068 /* Plot.swift */,
 				E6CFDC1324364AC400A50CFC /* Sir.swift */,
+				E6E12E04244F7967001D8809 /* Utility.swift */,
 			);
 			path = corona;
 			sourceTree = "<group>";
@@ -272,6 +275,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6E12E05244F7967001D8809 /* Utility.swift in Sources */,
 				E6C439CE243639B40085C068 /* ContentView.swift in Sources */,
 				E6C439FB24363A000085C068 /* Plot.swift in Sources */,
 				E6CFDC1424364AC400A50CFC /* Sir.swift in Sources */,

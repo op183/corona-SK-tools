@@ -96,12 +96,14 @@ class SIRModel: ObservableObject {
     let infectious = 220.0
     
     @Published var current = true
-    var parameters: [Parameters] = [Parameters(day: 10, lambda: 0.675, lambdaISP: 0.57, kappa: 0.055),
-                                    Parameters(day: 26, lambda: 0.670, lambdaISP: 0.54, kappa: 0.045),
-
-                                    Parameters(day: 30, lambda: 0.675, lambdaISP: 0.55, kappa: 0.055),
-
-                                    //Parameters(day: 154, lambda: 0.72, lambdaISP: 0.55, kappa: 0.045),
+    // apply parameters (lambda, lambdaISP, kappa) BEFORE day
+    //
+    var parameters: [Parameters] = [Parameters(day: 6, lambda: 0.753, lambdaISP: 0.67, kappa: 0.0450), // fix (prve opatrenia)
+                                    Parameters(day: 19, lambda: 0.753, lambdaISP: 0.61, kappa: 0.0450), // fix (rúška)
+                                    Parameters(day: 32, lambda: 0.608, lambdaISP: 0.524, kappa: 0.0380), // fix 03/04 karantena
+                                    
+                                    Parameters(day: 47, lambda: 0.608, lambdaISP: 0.524, kappa: 0.0380), // tmp ??? fix, uvolnenie
+                                    
     ]
     
     var fixed: Int? {
@@ -147,7 +149,7 @@ class SIRModel: ObservableObject {
     }
     
     func solve() -> (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], death: [Double], sigma: [Double]) {
-        var sir = SIR(susspectible: susceptible, infectious: infectious, recovered: 0, beta: beta, gamma: gamma, lambda: 1.2)
+        var sir = SIR(susspectible: susceptible, infectious: infectious, recovered: 0, beta: beta, gamma: gamma, lambda: 1.15)
         // state <-> [susceptible, infectious]
         var state = [sir.state()]
         var infectionrate: [Double] = [0]
@@ -188,8 +190,8 @@ class SIRModel: ObservableObject {
             // update lambda
             // modeluje nábeh opatrení na obmedzenie social distance (latencia cca 14 dní)
             //if sir.lambda > _lambda {
-                sir.lambda -= (sir.lambda - _lambda) * 0.2
-            Kappa -= (Kappa - _kappa) * 0.2
+                sir.lambda -= (sir.lambda - _lambda) * 0.33
+            Kappa -= (Kappa - _kappa) * 0.33
             //}
             
             // a small proportion of infectious is identified and isolated by active screening and "massive" testing
@@ -242,7 +244,11 @@ class SIRModel: ObservableObject {
                 l = state[i - latency][1] * 0.2
             }
             hospitalized.append(det * 0.25 + l)
-            isolated.append(det)
+            //if i == 32 {
+            //    isolated.append(det + 60 * 6.5) // odchyt kolony na hranici pred velkou nocou
+            //} else {
+                isolated.append(det)
+            //}
             
             // the rest stay in population and spread the infection
             //s_[1] *= 1 - kappa
@@ -283,7 +289,9 @@ class SIRModel: ObservableObject {
         }
         var s: [Double] = [0.0]
         for i in 1 ..< e2.count {
-            let _s = sqrt(e2[...i].reduce(0.0, +) / Double(i))
+            let j = max(i - latency, 0)
+            let _s = sqrt(e2[j ... i].reduce(0.0, +) / Double(i))
+            
             s.append(_s)
         }
         r.sigma = s

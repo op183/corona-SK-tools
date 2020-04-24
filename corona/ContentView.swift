@@ -19,12 +19,12 @@ struct ContentView: View {
             VStack {
                 HStack {
                     VStack {
-                        Slider(value: $model.kappa, in: (0.0 ... 0.2), minimumValueLabel: Text("0").onTapGesture {
+                        Slider(value: $model.kappa, in: (0.0 ... 0.08), minimumValueLabel: Text("0").onTapGesture {
                                 self.model.kappa -= 0.0001
                             if self.model.kappa < 0 {
                                 self.model.kappa = 0
                             }
-                            }, maximumValueLabel: Text("0.2").onTapGesture {
+                            }, maximumValueLabel: Text("0.08").onTapGesture {
                                 self.model.kappa += 0.0001
                                 
                         }) {
@@ -138,12 +138,14 @@ struct ContentView: View {
                 if rateVisible {
                 Group {
                     
-                    PlotInfectionRate(values: model.result, max: 0.5, day: day)
+                    PlotInfectionRate(values: model.result, max: 0.25, day: day)
                         .border(Color.secondary.opacity(0.1)).padding()
                     HStack {
                         Spacer()
-                        Text("σ 0 ... 50").foregroundColor(.secondary)
-                        Text("Active rate 0.75 ... 1.25").foregroundColor(.yellow)
+                        Group {
+                            Text("σ").font(.title).baselineOffset(5) + Text("\(self.model.latency)").baselineOffset(-5) + Text(" 0 ... 50").baselineOffset(7)
+                        }.foregroundColor(.secondary)
+                        Text("Active rate 0.875 ... 1.125").foregroundColor(.yellow)
                         //Text("Morbidity 0 ... 10%")  removed from presentation due inacuracy
                         Spacer()
                         Text("Interverntion FIXED on day \(model.fixed ?? 0),")
