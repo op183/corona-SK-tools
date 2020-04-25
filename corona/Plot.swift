@@ -320,6 +320,19 @@ struct PlotInfectionRate: View {
                         path.addLines(points)
                     }.stroke(Color.yellow, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
                     
+                    // im
+                    Path { (path) in
+                        path.move(to: .init(x: 0, y: proxy.size.height))
+                        let im = zip(sk_rd, sk_rd[1...]).map { v -> Double in
+                            v.1 / v.0
+                        }
+                        let enumeration = im[14...].enumerated()
+                        let points = enumeration.map({ (v) -> CGPoint in
+                            CGPoint(x: Double(v.offset + 14) * Double(proxy.size.width) / Double(self.values.infectionrate.count - 1), y: Double(proxy.size.height) - (v.element - 0.875) * Double(proxy.size.height)/self.max)
+                        })
+                            
+                        path.addLines(points)
+                    }.stroke(Color.primary, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
                     
                     // statistic
                     Path { (path) in
@@ -435,6 +448,7 @@ let sk_rd: [Double] = [
 1244 - 296,
 1325 - 303,
 1360 - 372,
+1373 - 403,
 ]
 
 // TODO: check daily data

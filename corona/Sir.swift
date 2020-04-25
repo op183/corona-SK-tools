@@ -102,7 +102,7 @@ class SIRModel: ObservableObject {
                                     Parameters(day: 19, lambda: 0.753, lambdaISP: 0.61, kappa: 0.0450), // fix (rúška)
                                     Parameters(day: 32, lambda: 0.608, lambdaISP: 0.524, kappa: 0.0380), // fix 03/04 karantena
                                     
-                                    Parameters(day: 47, lambda: 0.608, lambdaISP: 0.524, kappa: 0.0380), // tmp ??? fix, uvolnenie
+                                    Parameters(day: 47, lambda: 0.580, lambdaISP: 0.468, kappa: 0.047), // tmp ??? fix, uvolnenie
                                     
     ]
     
