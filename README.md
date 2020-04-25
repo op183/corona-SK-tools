@@ -31,3 +31,6 @@ ale najmä https://www.epicx-lab.com/uploads/9/6/9/4/9694133/inserm-covid-19_rep
 Model zatiaľ pre riešenie používa dvojfázové riešenie, v prvej fáze je spočítaný SIR model pomocou RK4 (runge kutta 4), v druhej fáze je spozdenie pozitívne testovaných modelované eulerovou metódou, pričom pozitívne testovaní so spozdením 0 sú aktívne vyhladní hygienikmi (contact trecking) s pravdepodobnosťou kappa, so spozdením sú pozitívne testovaní infektovaní jedinci so symptomatickým priebehom infekcie (indikovaní pre testovanie lekárom)
 
 TODO: https://github.com/op183/corona-SK-tools/blob/master/Delay-Differential_Equations_with_Constant_Lags.pdf može výpočet modelu spresniť aj zjednodušiť.
+
+https://github.com/op183/corona-SK-tools/blob/master/Screenshot%202020-04-25%20at%2015.55.40.png.pdf
+
