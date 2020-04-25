@@ -28,9 +28,6 @@ Model a jeho správanie a závery ktoré z neho vyvodzujem sú veľmi podobné a
 
 ale najmä https://www.epicx-lab.com/uploads/9/6/9/4/9694133/inserm-covid-19_report_lockdown_idf-20200412.pdf kde parameter pa reprezentuje rovnaký typ intervencie ako kappa v mojom "toy modeli".
 
-https://github.com/op183/corona-SK-tools/blob/master/corona/Screenshot%202020-04-19%20at%2012.01.16.png
-
-
 Model zatiaľ pre riešenie používa dvojfázové riešenie, v prvej fáze je spočítaný SIR model pomocou RK4 (runge kutta 4), v druhej fáze je spozdenie pozitívne testovaných modelované eulerovou metódou, pričom pozitívne testovaní so spozdením 0 sú aktívne vyhladní hygienikmi (contact trecking) s pravdepodobnosťou kappa, so spozdením sú pozitívne testovaní infektovaní jedinci so symptomatickým priebehom infekcie (indikovaní pre testovanie lekárom)
 
 TODO: https://github.com/op183/corona-SK-tools/blob/master/Delay-Differential_Equations_with_Constant_Lags.pdf može výpočet modelu spresniť aj zjednodušiť.
