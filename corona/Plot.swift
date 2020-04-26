@@ -83,8 +83,8 @@ struct Plot: View {
         let x = proxy.size.width / CGFloat(self.size - 1) * CGFloat(day)
         var median7 = ""
         var rm7 = ""
-        if day - 8 > 0 && day < size {
-            let last7days = Array(values.identified[day - 8 ..< day])
+        if day - 7 > 0 && day < size {
+            let last7days = Array(values.identified[day - 7 ... day])
             let diff = zip(last7days, last7days.dropFirst()).map { (v) -> Int in
                 Int(round(v.1 - v.0))
                 }
@@ -94,7 +94,7 @@ struct Plot: View {
             //print(diff)
             median7 = String(format: "%d", diffsorted[3])
             if day < sk_rd.count {
-                let last7days = Array(sk_rd[day - 8 ..< day])
+                let last7days = Array(sk_rd[day - 7 ... day])
                 let diff = zip(last7days, last7days.dropFirst()).map { (v) -> Int in
                     Int(round(v.1 - v.0))
                     }
@@ -196,7 +196,7 @@ struct Plot: View {
                                 CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
                             })
                         )
-                    }.stroke(Color.yellow, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
+                    }.stroke(Color.yellow, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [3, 3], dashPhase: 0))
                     
                     // mortality
                     Path { (path) in
@@ -293,7 +293,7 @@ struct PlotInfectionRate: View {
                     Path { (path) in
                         path.move(to: .init(x: 0, y: proxy.size.height / 2))
                         path.addLine(to: .init(x: proxy.size.width, y: proxy.size.height / 2))
-                    }.stroke(Color.yellow, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
+                    }.stroke(Color.secondary, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 16], dashPhase: 0))
                     
                     // infectionrate
                     Path { (path) in
@@ -318,7 +318,7 @@ struct PlotInfectionRate: View {
                         })
                             
                         path.addLines(points)
-                    }.stroke(Color.yellow, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
+                    }.stroke(Color.yellow, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [3, 3], dashPhase: 0))
                     
                     // im
                     Path { (path) in
@@ -332,7 +332,7 @@ struct PlotInfectionRate: View {
                         })
                             
                         path.addLines(points)
-                    }.stroke(Color.primary, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
+                    }.stroke(Color.primary, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [3, 3], dashPhase: 0))
                     
                     // statistic
                     Path { (path) in
@@ -445,10 +445,11 @@ let sk_rd: [Double] = [
 1161 - 224,
 1173 - 241,
 1199 - 272,
-1244 - 296,
+1244 - 298,
 1325 - 303,
 1360 - 372,
 1373 - 403,
+1379 - 412,
 ]
 
 // TODO: check daily data
