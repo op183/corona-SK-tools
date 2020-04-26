@@ -133,7 +133,7 @@ struct ContentView: View {
                             Text("\(self.model.days[i])").tag(i)
                         }
                     }.pickerStyle(SegmentedPickerStyle())
-                }
+                }.padding(.horizontal)
                 
                 if rateVisible {
                 Group {

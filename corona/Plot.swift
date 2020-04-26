@@ -30,13 +30,13 @@ struct Plot: View {
                     "2021-03-01T00:00:00+0000",
                     "2021-04-01T00:00:00+0000",
                     "2021-05-01T00:00:00+0000",
-
+                    
     ]
     
     fileprivate func month(proxy: GeometryProxy, isoDates: [String]) -> some View {
         
         var xdays: [CGFloat] = []
-
+        
         for isoDate in isoDates {
             let dateFormatter = ISO8601DateFormatter()
             let ref = dateFormatter.date(from: "2020-03-06T00:00:00+0000")!
@@ -87,7 +87,7 @@ struct Plot: View {
             let last7days = Array(values.identified[day - 7 ... day])
             let diff = zip(last7days, last7days.dropFirst()).map { (v) -> Int in
                 Int(round(v.1 - v.0))
-                }
+            }
             let diffsorted = diff.sorted()
             //print()
             //print(last7days)
@@ -97,7 +97,7 @@ struct Plot: View {
                 let last7days = Array(sk_rd[day - 7 ... day])
                 let diff = zip(last7days, last7days.dropFirst()).map { (v) -> Int in
                     Int(round(v.1 - v.0))
-                    }
+                }
                 let diffsorted = diff.sorted()
                 //print()
                 //print(last7days)
@@ -117,7 +117,7 @@ struct Plot: View {
                 Text(median7).foregroundColor(.yellow)
                 Text(rm7).foregroundColor(.primary)
             }
-                .font(.system(size: 11, weight: .light, design: .monospaced))
+            .font(.system(size: 11, weight: .light, design: .monospaced))
                 //.foregroundColor(Color.green)
                 .position(x: x, y:  proxy.size.height + 10)
         }
@@ -134,12 +134,12 @@ struct Plot: View {
                         stride(from: CGFloat.zero, through: proxy.size.width, by: step * 7).forEach { (x) in
                             // pondelok
                             if x + 3 * step < proxy.size.width {
-                            path.move(to: .init(x: x + 3 * step, y: 0))
-                            path.addLine(to: .init(x: x + 3 * step, y: proxy.size.height))
+                                path.move(to: .init(x: x + 3 * step, y: 0))
+                                path.addLine(to: .init(x: x + 3 * step, y: proxy.size.height))
                             }
                         }
                     }.stroke(lineWidth: 0.5).foregroundColor(Color.secondary)
- 
+                    
                     // month marker
                     self.month(proxy: proxy, isoDates: self.isoDates).id(UUID())
                     
@@ -178,15 +178,15 @@ struct Plot: View {
                     
                     // hospitalized (not really! (infectious not early isolated)
                     /*
-                    Path { (path) in
-                        path.move(to: .init(x: 0, y: proxy.size.height))
-                        path.addLines(
-                            self.values.hospitalized.enumerated().map({ (v) -> CGPoint in
-                                CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
-                            })
-                        )
-                    }.stroke(lineWidth: 1).foregroundColor(Color.orange)
- */
+                     Path { (path) in
+                     path.move(to: .init(x: 0, y: proxy.size.height))
+                     path.addLines(
+                     self.values.hospitalized.enumerated().map({ (v) -> CGPoint in
+                     CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
+                     })
+                     )
+                     }.stroke(lineWidth: 1).foregroundColor(Color.orange)
+                     */
                     
                     // identified
                     Path { (path) in
@@ -210,27 +210,35 @@ struct Plot: View {
                     }.foregroundColor(Color.red.opacity(0.3))//.stroke(Color.red, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [10, 10], dashPhase: 0))
                     
                     Group {
-                    // susceptible
-                    Path { (path) in
-                        path.move(to: .init(x: 0, y: proxy.size.height))
-                        path.addLines(
-                            self.values.susceptible.enumerated().map({ (v) -> CGPoint in
-                                CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
-                            })
-                        )
-                    }.stroke(lineWidth: 1).foregroundColor(Color.green)
-                    
-                    
-                    // real SK cases 
-                    Path { (path) in
-                        path.move(to: .init(x: 0, y: proxy.size.height))
-                        path.addLines(
-                            sk_rd.enumerated().map({ (v) -> CGPoint in
-                                CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
-                            })
-                        )
-                    }.stroke(lineWidth: 1).foregroundColor(Color.primary)
+                        // susceptible
+                        Path { (path) in
+                            path.move(to: .init(x: 0, y: proxy.size.height))
+                            path.addLines(
+                                self.values.susceptible.enumerated().map({ (v) -> CGPoint in
+                                    CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
+                                })
+                            )
+                        }.stroke(lineWidth: 1).foregroundColor(Color.green)
+                        
+                        
+                        // real SK cases
+                        Path { (path) in
+                            path.move(to: .init(x: 0, y: proxy.size.height))
+                            path.addLines(
+                                sk_rd.enumerated().map({ (v) -> CGPoint in
+                                    CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
+                                })
+                            )
+                        }.stroke(lineWidth: 1).foregroundColor(Color.primary)
                     }
+                    
+                    VStack(alignment: .leading) {
+                        Text("Modeled infectious").foregroundColor(.red)
+                        Text("Real active cases").foregroundColor(.primary)
+                        Text("Active cases prediction").foregroundColor(.yellow)
+                        Text("Early detected").foregroundColor(.blue)
+                    }.font(.system(size: 14, weight: .ultraLight, design: .rounded))
+                        .position(.init(x: 75, y: 35))
                     
                 }
             }
@@ -302,7 +310,7 @@ struct PlotInfectionRate: View {
                         let points = enumeration.map({ (v) -> CGPoint in
                             CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.values.infectionrate.count - 1), y: Double(proxy.size.height) - (v.element - 0.875) * Double(proxy.size.height)/self.max)
                         })
-                            
+                        
                         path.addLines(points)
                     }.stroke(lineWidth: 1).foregroundColor(Color.pink)
                     
@@ -316,7 +324,7 @@ struct PlotInfectionRate: View {
                         let points = enumeration.map({ (v) -> CGPoint in
                             CGPoint(x: Double(v.offset + 14) * Double(proxy.size.width) / Double(self.values.infectionrate.count - 1), y: Double(proxy.size.height) - (v.element - 0.875) * Double(proxy.size.height)/self.max)
                         })
-                            
+                        
                         path.addLines(points)
                     }.stroke(Color.yellow, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [3, 3], dashPhase: 0))
                     
@@ -330,14 +338,14 @@ struct PlotInfectionRate: View {
                         let points = enumeration.map({ (v) -> CGPoint in
                             CGPoint(x: Double(v.offset + 14) * Double(proxy.size.width) / Double(self.values.infectionrate.count - 1), y: Double(proxy.size.height) - (v.element - 0.875) * Double(proxy.size.height)/self.max)
                         })
-                            
+                        
                         path.addLines(points)
                     }.stroke(Color.primary, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [3, 3], dashPhase: 0))
                     
                     // statistic
                     Path { (path) in
                         let enumeration = self.values.sigma.enumerated()
-
+                        
                         let points = enumeration.map({ (v) -> CGPoint in
                             CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.values.identified.count - 1), y: Double(proxy.size.height) - (v.element / 5.0) * Double(proxy.size.height) / 10)
                         })
@@ -345,7 +353,7 @@ struct PlotInfectionRate: View {
                         path.move(to: .init(x: 0, y: proxy.size.height))
                         path.addLines(points)
                     }.stroke(lineWidth: 1).foregroundColor(Color.secondary)
- 
+                    
                     
                 }
             }
@@ -356,100 +364,100 @@ struct PlotInfectionRate: View {
 
 // sk data
 let _sk_rd: [Double] = [
-1,
-3,
-5,
-7,
-8.5,
-10,
-21,
-32,
-44,
-61,
-72,
-97,
-105,
-123,
-137,
-178,
-185,
-204,
-216,
-226,
-269,
-292,
-314 - 2,
-336 - 2,
-363 - 4,
-400 - 4,
-426 - 4,
-450 - 6,
-471 - 9,
-485 - 9,
-534 - 10,
-581 - 10,
-682 - 18,
-701 - 25,
-715 - 25,
-728 - 25,
-742 - 25,
-769 - 31 - 0 * 76
+    1,
+    3,
+    5,
+    7,
+    8.5,
+    10,
+    21,
+    32,
+    44,
+    61,
+    72,
+    97,
+    105,
+    123,
+    137,
+    178,
+    185,
+    204,
+    216,
+    226,
+    269,
+    292,
+    314 - 2,
+    336 - 2,
+    363 - 4,
+    400 - 4,
+    426 - 4,
+    450 - 6,
+    471 - 9,
+    485 - 9,
+    534 - 10,
+    581 - 10,
+    682 - 18,
+    701 - 25,
+    715 - 25,
+    728 - 25,
+    742 - 25,
+    769 - 31 - 0 * 76
 ]
 
 // sk data, based on new total recovered
 // total cases reported - released
 let sk_rd: [Double] = [
-1,
-3 - 0,
-5 - 1,
-7 - 1,
-8.5 - 1,
-10 - 1,
-21 - 3,
-32 - 4,
-44 - 6,
-61 - 8,
-72 - 10,
-97 - 13,
-105 - 15,
-123 - 17,
-137 - 19,
-178 - 25,
-185 - 26,
-204 - 38,
-216 - 30,
-226 - 31,
-269 - 37,
-292 - 41,
-314 - 44,
-336 - 47,
-363 - 51,
-400 - 56,
-426 - 59,
-450 - 63,
-471 - 66,
-485 - 57,
-534 - 74,
-581 - 81,
-682 - 95,
-701 - 98,
-715 - 99,
-728 - 101,
-742 - 103,
-769 - 107,
-835 - 109,
-863 - 115,
-977 - 155,
-1049 - 175,
-1089 - 184,
-1161 - 224,
-1173 - 241,
-1199 - 272,
-1244 - 298,
-1325 - 303,
-1360 - 372,
-1373 - 403,
-1379 - 412,
+    1,
+    3 - 0,
+    5 - 1,
+    7 - 1,
+    8.5 - 1,
+    10 - 1,
+    21 - 3,
+    32 - 4,
+    44 - 6,
+    61 - 8,
+    72 - 10,
+    97 - 13,
+    105 - 15,
+    123 - 17,
+    137 - 19,
+    178 - 25,
+    185 - 26,
+    204 - 38,
+    216 - 30,
+    226 - 31,
+    269 - 37,
+    292 - 41,
+    314 - 44,
+    336 - 47,
+    363 - 51,
+    400 - 56,
+    426 - 59,
+    450 - 63,
+    471 - 66,
+    485 - 57,
+    534 - 74,
+    581 - 81,
+    682 - 95,
+    701 - 98,
+    715 - 99,
+    728 - 101,
+    742 - 103,
+    769 - 107,
+    835 - 109,
+    863 - 115,
+    977 - 155,
+    1049 - 175,
+    1089 - 184,
+    1161 - 224,
+    1173 - 241,
+    1199 - 272,
+    1244 - 298,
+    1325 - 303,
+    1360 - 372,
+    1373 - 403,
+    1379 - 412,
 ]
 
 // TODO: check daily data
