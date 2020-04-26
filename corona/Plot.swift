@@ -461,4 +461,5 @@ let sk_rd: [Double] = [
 ]
 
 // TODO: check daily data
+
 let data_source = "https://mapa.covid.chat/map_data/daily" // daily data external source
