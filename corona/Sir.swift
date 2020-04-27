@@ -106,7 +106,6 @@ class SIRModel: ObservableObject {
         // po dni 47 sa spustila 1. relaxacná fáza, odhad parametrov 0.667, 0.544, 0.045 založený na A(i)/A(i-1) cca 1.05 (5% denný nárast
         // bude možné spresniť za 14 dní
         //
-        
         Parameters(day: 63, lambda: 0.667, lambdaISP: 0.544, kappa: 0.045),
         //
     ]
@@ -288,7 +287,8 @@ class SIRModel: ObservableObject {
     var result: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], death: [Double], sigma: [Double]) {
         var r = solve()
         var e2: [Double] = [0.0]
-        for i in 1 ..< sk_rd.count {
+        for i in 1 ..< sk_rd.count where i < r.identified.count {
+            print(i)
             let _e2 = pow((r.identified[i] - sk_rd[i]), 2.0)
             e2.append(_e2)
         }
