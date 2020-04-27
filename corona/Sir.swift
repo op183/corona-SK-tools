@@ -288,7 +288,6 @@ class SIRModel: ObservableObject {
         var r = solve()
         var e2: [Double] = [0.0]
         for i in 1 ..< sk_rd.count where i < r.identified.count {
-            print(i)
             let _e2 = pow((r.identified[i] - sk_rd[i]), 2.0)
             e2.append(_e2)
         }
