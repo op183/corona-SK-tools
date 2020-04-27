@@ -114,7 +114,7 @@ struct Plot: View {
             
             HStack {
                 Text(date(offset: day) + "(\(day))").foregroundColor(Color.green)
-                Text(median7).foregroundColor(.yellow)
+                Text(median7).foregroundColor(.orange)
                 Text(rm7).foregroundColor(.primary)
             }
             .font(.system(size: 11, weight: .light, design: .monospaced))
@@ -196,7 +196,7 @@ struct Plot: View {
                                 CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
                             })
                         )
-                    }.stroke(Color.yellow, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [3, 3], dashPhase: 0))
+                    }.stroke(Color.orange, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [3, 3], dashPhase: 0))
                     
                     // mortality
                     Path { (path) in
@@ -235,7 +235,7 @@ struct Plot: View {
                     VStack(alignment: .leading) {
                         Text("Modeled infectious").foregroundColor(.red)
                         Text("Real active cases").foregroundColor(.primary)
-                        Text("Active cases prediction").foregroundColor(.yellow)
+                        Text("Active cases prediction").foregroundColor(.orange)
                         Text("Early detected").foregroundColor(.blue)
                     }.font(.system(size: 14, weight: .ultraLight, design: .rounded))
                         .position(.init(x: 75, y: 35))
@@ -326,7 +326,7 @@ struct PlotInfectionRate: View {
                         })
                         
                         path.addLines(points)
-                    }.stroke(Color.yellow, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [3, 3], dashPhase: 0))
+                    }.stroke(Color.orange, style: StrokeStyle.init(lineWidth: 1, lineCap: .square, lineJoin: .bevel, miterLimit: 0, dash: [3, 3], dashPhase: 0))
                     
                     // im
                     Path { (path) in

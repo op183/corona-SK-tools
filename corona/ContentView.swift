@@ -145,7 +145,7 @@ struct ContentView: View {
                         Group {
                             Text("σ").font(.title).baselineOffset(5) + Text("\(self.model.latency)").baselineOffset(-5) + Text(" 0 ... 50").baselineOffset(7)
                         }.foregroundColor(.secondary)
-                        Text("Active rate 0.875 ... 1.125").foregroundColor(.yellow)
+                        Text("Active rate 0.875 ... 1.125").foregroundColor(.orange)
                         //Text("Morbidity 0 ... 10%")  removed from presentation due inacuracy
                         Spacer()
                         Text("Interverntion FIXED on day \(model.fixed ?? 0),")
