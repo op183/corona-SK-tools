@@ -34,3 +34,4 @@ TODO: https://github.com/op183/corona-SK-tools/blob/master/Delay-Differential_Eq
 
 https://github.com/op183/corona-SK-tools/blob/master/Screenshot%202020-04-25%20at%2015.55.40.png.pdf
 
+Veľmi inšpiratívny prístup s rovnakou ídeou sa objavil v Solvable delay model for epidemic spreading: the case of Covid-19 in Italy https://github.com/op183/corona-SK-tools/blob/master/2003.13571.pdf
