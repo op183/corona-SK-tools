@@ -83,6 +83,7 @@ struct Plot: View {
         let x = proxy.size.width / CGFloat(self.size - 1) * CGFloat(day)
         var median7 = ""
         var rm7 = ""
+        var d7 = ""
         if day - 7 > 0 && day < size {
             let last7days = Array(values.identified[day - 7 ... day])
             let diff = zip(last7days, last7days.dropFirst()).map { (v) -> Int in
@@ -92,6 +93,7 @@ struct Plot: View {
             //print()
             //print(last7days)
             //print(diff)
+            let d70 = diffsorted[3]
             median7 = String(format: "%d", diffsorted[3])
             if day < sk_rd.count {
                 let last7days = Array(sk_rd[day - 7 ... day])
@@ -99,11 +101,13 @@ struct Plot: View {
                     Int(round(v.1 - v.0))
                 }
                 let diffsorted = diff.sorted()
+                let d71 = diffsorted[3]
                 //print()
                 //print(last7days)
                 //print(diff)
                 rm7 = String(format: "%d", diffsorted[3])
                 //print(rm7)
+                d7 = String(format: "%d", d71 - d70)
             }
         }
         return ZStack {
@@ -116,6 +120,7 @@ struct Plot: View {
                 Text(date(offset: day) + "(\(day))").foregroundColor(Color.green)
                 Text(median7).foregroundColor(.orange)
                 Text(rm7).foregroundColor(.primary)
+                Text(d7).foregroundColor(.secondary)
             }
             .font(.system(size: 11, weight: .light, design: .monospaced))
                 //.foregroundColor(Color.green)
@@ -460,6 +465,7 @@ let sk_rd: [Double] = [
     1379 - 412,
     1381 - 421,
     1384 - 443,
+    1391 - 506,
 ]
 
 // TODO: check daily data
