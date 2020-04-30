@@ -38,3 +38,4 @@ Veľmi inšpiratívny prístup s rovnakou ídeou sa objavil v Solvable delay mod
 
 Spresniť odhad kappa a základých "fixných pravdepodobností" pre-asymptomatických, asymptomatických a symptomatických prípadov v populácii je možné na základe https://github.com/op183/corona-SK-tools/blob/master/science.abb6936.full.pdf
 
+Podstatné pre pochopenie šírenia epidémie https://github.com/op183/corona-SK-tools/blob/master/2003.12028.pdf
