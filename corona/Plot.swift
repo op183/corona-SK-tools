@@ -470,6 +470,7 @@ let sk_rd: [Double] = [
     1403 - 582,
     1407 - 632,
     1408 - 644,
+    1413 - 668,
 ]
 
 // TODO: check daily data
