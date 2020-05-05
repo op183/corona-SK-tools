@@ -240,10 +240,11 @@ struct Plot: View {
                     VStack(alignment: .leading) {
                         Text("Modeled infectious").foregroundColor(.red)
                         Text("Real active cases").foregroundColor(.primary)
-                        Text("Active cases prediction").foregroundColor(.orange)
+                        Text("Active cases").foregroundColor(.orange)
                         Text("Early detected").foregroundColor(.blue)
+                        Text("Positively tested").foregroundColor(.green)
                     }.font(.system(size: 14, weight: .ultraLight, design: .rounded))
-                        .position(.init(x: 75, y: 35))
+                        .position(.init(x: 75, y: 45))
                     
                 }
             }
@@ -391,22 +392,44 @@ let _sk_rd: [Double] = [
     226,
     269,
     292,
-    314 - 2,
-    336 - 2,
-    363 - 4,
-    400 - 4,
-    426 - 4,
-    450 - 6,
-    471 - 9,
-    485 - 9,
-    534 - 10,
-    581 - 10,
-    682 - 18,
-    701 - 25,
-    715 - 25,
-    728 - 25,
-    742 - 25,
-    769 - 31 - 0 * 76
+    314,
+    336,
+    363,
+    400,
+    426,
+    450,
+    471,
+    485,
+    534,
+    581,
+    682,
+    701,
+    715,
+    728,
+    742,
+    769,
+    835,
+    863,
+    977,
+    1049,
+    1089,
+    1161,
+    1173,
+    1199,
+    1244,
+    1325,
+    1360,
+    1373,
+    1379,
+    1381,
+    1384,
+    1391,
+    1396,
+    1403,
+    1407,
+    1408,
+    1413,
+    1421,
 ]
 
 // sk data, based on new total recovered
@@ -471,6 +494,7 @@ let sk_rd: [Double] = [
     1407 - 632,
     1408 - 644,
     1413 - 668,
+    1421 - 766,
 ]
 
 // TODO: check daily data

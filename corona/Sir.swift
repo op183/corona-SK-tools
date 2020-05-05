@@ -108,7 +108,7 @@ class SIRModel: ObservableObject {
         // po dni 47 sa spustila 1. relaxacná fáza, odhad parametrov 0.660, 0.515, 0.0551 založený na A(i)/A(i-1) cca 1.035 (2.5% denný nárast
         // bude možné spresniť za 14 dní
         //
-        Parameters(day: 60, lambda: 0.660, lambdaISP: 0.515, kappa: 0.0551), // začiatok fázy 2 + 3 !!!
+        Parameters(day: 60, lambda: 0.630, lambdaISP: 0.485, kappa: 0.0551), // začiatok fázy 2 + 3 !!!
         //
     ]
     
@@ -163,7 +163,7 @@ class SIRModel: ObservableObject {
         var hospitalized: [Double] = [0]
         var mortality: [Double] = [0.0]
         var death: [Double] = [0.0]
-        var cases: [Double] = [0.0]
+        //var cases: [Double] = [0.0]
                 
         var iterator = parameters.makeIterator()
         var p = iterator.next()
@@ -267,10 +267,11 @@ class SIRModel: ObservableObject {
             max(v.0, v.1)
         }
         
+        /*
         hospitalized[1...].enumerated().forEach { (v) in
             let c = cases[v.offset]
             cases.append(c + v.element)
-        }
+        }*/
         
         mortality = state.map { (v) -> Double in
             let r = logisticMorbidity(indicated: v[1] * 0.08, icu: icu)
@@ -282,8 +283,23 @@ class SIRModel: ObservableObject {
             death.append(ld + v.element)
         }
         
+        let ci = state.map {$0[1]}.map { (v) -> Double in
+            v * gamma
+        }
+        let ri = (1 ..< ci.count).map { (i) -> Double in
+            let ci = zip(ci[...i], ci[1 ..< i]).reduce(0.0) { (r, p) -> Double in
+                r + 0.5 * (p.0 + p.1)
+            }
+            return (state.map {$0[1]}[i] + ci * gamma) * 0.2
+            
+        }
         
-        return (susceptible: state.map {$0[0]}, infectious: state.map {$0[1]}, isolated: isolated, hospitalized: hospitalized, infectionrate: infectionrate, identified: identified, death: death, sigma: [])
+        let rii = [0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0] + ri.dropLast(latency)
+
+        
+        // susceptible represents temporary positivly tested !!!
+        
+        return (susceptible: rii/*state.map {$0[0]}*/, infectious: state.map {$0[1]}, isolated: isolated, hospitalized: hospitalized, infectionrate: infectionrate, identified: identified, death: death, sigma: [])
     }
     
     var result: (susceptible: [Double], infectious: [Double], isolated: [Double], hospitalized: [Double], infectionrate: [Double], identified: [Double], death: [Double], sigma: [Double]) {
