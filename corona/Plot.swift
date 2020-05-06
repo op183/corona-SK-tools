@@ -230,7 +230,7 @@ struct Plot: View {
                         Path { (path) in
                             path.move(to: .init(x: 0, y: proxy.size.height))
                             path.addLines(
-                                sk_rd.enumerated().map({ (v) -> CGPoint in
+                                _sk_rd.enumerated().map({ (v) -> CGPoint in
                                     CGPoint(x: Double(v.offset) * Double(proxy.size.width) / Double(self.size - 1), y: Double(proxy.size.height) - v.element * Double(proxy.size.height)/self.max)
                                 })
                             )
@@ -239,7 +239,7 @@ struct Plot: View {
                     
                     VStack(alignment: .leading) {
                         Text("Modeled infectious").foregroundColor(.red)
-                        Text("Real active cases").foregroundColor(.primary)
+                        Text("Reported cases").foregroundColor(.primary)
                         Text("Active cases").foregroundColor(.orange)
                         Text("Early detected").foregroundColor(.blue)
                         Text("Positively tested").foregroundColor(.green)
@@ -430,6 +430,7 @@ let _sk_rd: [Double] = [
     1408,
     1413,
     1421,
+    1429,
 ]
 
 // sk data, based on new total recovered
@@ -495,6 +496,7 @@ let sk_rd: [Double] = [
     1408 - 644,
     1413 - 668,
     1421 - 766,
+    1429 - 787,
 ]
 
 // TODO: check daily data
