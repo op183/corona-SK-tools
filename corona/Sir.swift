@@ -100,9 +100,9 @@ class SIRModel: ObservableObject {
     //
     var parameters: [Parameters] = [Parameters(day: 6, lambda: 0.753, lambdaISP: 0.67, kappa: 0.0450), // fix (prve opatrenia) 0 ... 6
                                     Parameters(day: 19, lambda: 0.761, lambdaISP: 0.603, kappa: 0.0630), // fix (rúška)  6 ... 19
-                                    Parameters(day: 32, lambda: 0.708, lambdaISP: 0.521, kappa: 0.062), // fix 06/04 karantena, obchody, ruška, zakaz vychadzanie
+                                    Parameters(day: 32, lambda: 0.708, lambdaISP: 0.510, kappa: 0.062), // fix 06/04 karantena, obchody, ruška, zakaz vychadzanie
                                     
-                                    Parameters(day: 47, lambda: 0.518, lambdaISP: 0.390, kappa: 0.0551), // tmp ??? fix, karantena 32 ... 47
+                                    Parameters(day: 47, lambda: 0.518, lambdaISP: 0.380, kappa: 0.0551), // tmp ??? fix, karantena 32 ... 47
 
 
         // po dni 47 sa spustila 1. relaxacná fáza, odhad parametrov 0.660, 0.515, 0.0551 založený na A(i)/A(i-1) cca 1.035 (2.5% denný nárast
