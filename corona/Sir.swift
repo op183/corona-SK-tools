@@ -105,7 +105,7 @@ class SIRModel: ObservableObject {
 
                                     
                                     //Parameters(day: 47, lambda: 0.518, lambdaISP: 0.380, kappa: 0.0551), // tmp ??? fix, karantena 32 ... 47
-                                    Parameters(day: 50, lambda: 0.524, lambdaISP: 0.378, kappa: 0.0616), // tmp ??? fix, karantena 32 ... 47
+                                    Parameters(day: 54, lambda: 0.524, lambdaISP: 0.378, kappa: 0.0616), // tmp ??? fix, karantena 32 ... 47 ??? One week delay ???
 
 
 
@@ -113,7 +113,7 @@ class SIRModel: ObservableObject {
         // bude možné spresniť za 14 dní
         //
         //Parameters(day: 62, lambda: 0.600, lambdaISP: 0.485, kappa: 0.0616), // začiatok fázy 2 + 3 !!!
-        Parameters(day: 67, lambda: 0.620, lambdaISP: 0.485, kappa: 0.0551), // začiatok fázy 2 + 3 !!! (3 až 4 dní sklz v nábehu)
+        Parameters(day: 69, lambda: 0.620, lambdaISP: 0.485, kappa: 0.0551), // začiatok fázy 2 + 3 !!! (3 až 4 dní sklz v nábehu)
 
         //
     ]
