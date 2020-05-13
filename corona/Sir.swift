@@ -113,7 +113,7 @@ class SIRModel: ObservableObject {
         // bude možné spresniť za 14 dní
         //
         //Parameters(day: 62, lambda: 0.600, lambdaISP: 0.485, kappa: 0.0616), // začiatok fázy 2 + 3 !!!
-        Parameters(day: 69, lambda: 0.620, lambdaISP: 0.485, kappa: 0.0551), // začiatok fázy 2 + 3 !!! (3 až 4 dní sklz v nábehu)
+        Parameters(day: 69, lambda: 0.600, lambdaISP: 0.440, kappa: 0.0616), // začiatok fázy 2 + 3 !!! (3 až 4 dní sklz v nábehu)
 
         //
     ]
