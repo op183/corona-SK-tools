@@ -445,6 +445,7 @@ let _sk_rd: [Double] = [
     1495,
     1495,
     1496,
+    1502,
 ]
 
 // sk data, based on new total recovered
@@ -525,6 +526,7 @@ let sk_rd: [Double] = [
     1495 - 1213,
     1495 - 1220,
     1496 - 1259,
+    1502 - 1273,
 ]
 
 // TODO: check daily data
