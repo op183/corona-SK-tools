@@ -114,10 +114,10 @@ class SIRModel: ObservableObject {
         //
         Parameters(day: 62, lambda: 0.540, lambdaISP: 0.370, kappa: 0.0616),
         // začiatok fázy 2 + 3
-        Parameters(day: 75, lambda: 0.640, lambdaISP: 0.475, kappa: 0.0616),
+        //Parameters(day: 75, lambda: 0.640, lambdaISP: 0.475, kappa: 0.0616),
         // začiatok fázy 4 ???
         // dalsie uvolnovanie? ????? !!!!!
-        Parameters(day: 85, lambda: 0.670, lambdaISP: 0.495, kappa: 0.0616),
+        //Parameters(day: 85, lambda: 0.670, lambdaISP: 0.495, kappa: 0.0616),
 
         //
     ]
