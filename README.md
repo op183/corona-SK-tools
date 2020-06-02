@@ -1,6 +1,8 @@
 # corona-SK-tools
 corona SK tools
 
+<B>UPDATE</B> for more advanced model see https://github.com/op183/covidTools
+
 Vizualizácia SIR modelu v SK
 
 SIR model definuje
